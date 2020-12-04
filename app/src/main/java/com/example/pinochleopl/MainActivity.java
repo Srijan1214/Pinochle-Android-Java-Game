@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     LayoutInflater layoutInflater;
-    ImageButton highlight;
     FrameLayout frameLayout;
     FrameLayout frameLayout2;
     boolean bordered = false;
