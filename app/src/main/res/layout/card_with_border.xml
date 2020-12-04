@@ -15,13 +15,23 @@
         android:src="@drawable/two_c" />
 
     <ImageButton
-        android:id="@+id/highlight"
+        android:id="@+id/black_highlight"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="0dp"
         android:src="@null"
         android:clickable="false"
-        android:background="@drawable/image_button_border"></ImageButton>
+        android:visibility="invisible"
+        android:background="@drawable/black_border"></ImageButton>
 
 
+    <ImageButton
+        android:id="@+id/green_highlight"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="0dp"
+        android:src="@null"
+        android:clickable="false"
+        android:visibility="visible"
+        android:background="@drawable/green_border"></ImageButton>
     </FrameLayout>

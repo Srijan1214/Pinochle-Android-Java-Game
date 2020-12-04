@@ -2,11 +2,9 @@ package com.example.pinochleopl;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -45,19 +43,21 @@ public class MainActivity extends AppCompatActivity {
         layoutParams2.setMargins(100, 0,0,0);
         frameLayout2.setLayoutParams(layoutParams2);
         rl.addView(frameLayout2);
-//        frameLayout2 = (FrameLayout) findViewById(R.id.second);
 
         View.OnClickListener onClickListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if(bordered) {
-                    v.findViewById(R.id.highlight).setVisibility(View.INVISIBLE);
+                    v.findViewById(R.id.black_highlight).setVisibility(View.INVISIBLE);
                     try {
                         rl.removeView(v);
+                        RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(card_width,card_height);
+                        layoutParams2.setMargins(2000, 0,0,0);
+                        v.setLayoutParams(layoutParams2);
                         hand_cards.addView(v);
                     } catch (Exception e) {}
                 } else {
-                    v.findViewById(R.id.highlight).setVisibility(View.VISIBLE);
+                    v.findViewById(R.id.black_highlight).setVisibility(View.VISIBLE);
                     try {
                         hand_cards.removeView(v);
                         rl.addView(v);
