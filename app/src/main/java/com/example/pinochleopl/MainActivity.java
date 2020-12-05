@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Bitmap getResizedBitmap(Bitmap bitmap, int width, int height) {
+    private Bitmap get_resized_bitmap(Bitmap bitmap, int width, int height) {
         Matrix matrix = new Matrix();
 
         RectF src = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < id_to_bitmap.length; i += 2) {
             id_to_bitmap[i] =
-                    getResizedBitmap(
+                    get_resized_bitmap(
                             BitmapFactory.decodeResource(
                                     getResources(),
                                     getResId(
@@ -248,14 +248,42 @@ public class MainActivity extends AppCompatActivity {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
             layoutParams.setMargins(left_margin, 0, 0, 0);
             frameLayout.setLayoutParams(layoutParams);
+            View.OnClickListener onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.bringToFront();
+                    clear_all_cards();
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    long start = System.currentTimeMillis();
+                                    redraw_cards();
+                                    long finish = System.currentTimeMillis();
+                                    long timeElapsed = finish - start;
+                                    System.out.println(timeElapsed);
+                                }
+                            },
+                            300);
+                    System.out.println("Removed Cadrdsda!!!!");
+                }
+            };
+            frameLayout.setOnClickListener(onClickListener);
             this.stock_cards_layout.addView(frameLayout);
             left_margin += dx;
         }
     }
 
+    private void clear_all_cards() {
+        this.stock_cards_layout.removeAllViews();
+        this.human_hand_cards_layout.removeAllViews();
+        this.human_meld_cards_layout.removeAllViews();
+        this.human_capture_cards_layout.removeAllViews();
+        this.computer_hand_cards_layout.removeAllViews();
+        this.computer_meld_cards_layout.removeAllViews();
+        this.computer_capture_cards_layout.removeAllViews();
+    }
+
     private void image_button_stuff() {
-//        highlight = (ImageButton) findViewById(R.id.highlight);
-//        frameLayout = (FrameLayout) findViewById(R.id.card_layout);
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.stock_cards);
         RelativeLayout hand_cards = (RelativeLayout) findViewById(R.id.computer_cards);
 
