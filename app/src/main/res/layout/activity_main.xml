@@ -7,467 +7,477 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/score_human"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/cardview_dark_background"
-            android:text="Human Score: "></com.google.android.material.textview.MaterialTextView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/score_human"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/cardview_dark_background"
+                android:text="Human Score: "></com.google.android.material.textview.MaterialTextView>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/score_computer"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="300dp"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@id/score_human"
-            android:layout_toRightOf="@id/score_human"
-            android:background="@color/cardview_dark_background"
-            android:text="Computer Score: "></com.google.android.material.textview.MaterialTextView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/score_computer"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="300dp"
+                android:layout_marginLeft="300dp"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@id/score_human"
+                android:layout_toRightOf="@id/score_human"
+                android:background="@color/cardview_dark_background"
+                android:text="Computer Score: "></com.google.android.material.textview.MaterialTextView>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/computer_cards_scroll"
-            android:layout_width="550dp"
-            android:layout_height="120dp"
-            android:layout_below="@id/score_human"
-            android:layout_marginTop="5dp">
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/computer_cards_scroll"
+                android:layout_width="500dp"
+                android:layout_height="120dp"
+                android:layout_below="@id/score_human"
+                android:layout_marginTop="5dp">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:id="@+id/computer_cards"
+                        android:layout_width="500dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Computer\nHand"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/computer_hand"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_1">
+
+                            <!--                    <include-->
+                            <!--                        android:id="@+id/card_layout"-->
+                            <!--                        layout="@layout/card_with_border"-->
+                            <!--                        android:layout_width="32dp"-->
+                            <!--                        android:layout_height="match_parent"></include>-->
+                        </RelativeLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/computer_hand"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Computer\nMeld"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/computer_meld"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_below="@id/computer_hand"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_2"></RelativeLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/computer_meld"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Computer\nCapture"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/computer_capture"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_below="@id/computer_meld"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_3"></RelativeLayout>
+                    </RelativeLayout>
+                </HorizontalScrollView>
+            </androidx.core.widget.NestedScrollView>
 
             <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:id="@+id/stock_cards_scroll"
+                android:layout_width="500dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/computer_cards_scroll"
+                android:layout_marginTop="5dp"
+                android:background="@color/design_default_color_primary_dark">
 
                 <RelativeLayout
-                    android:id="@+id/computer_cards"
-                    android:layout_width="550dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/black">
+                    android:id="@+id/__stock_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_1"
+                        android:id="@+id/text_stock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/cardview_dark_background"
-                        android:text="Computer\nHand"></com.google.android.material.textview.MaterialTextView>
+                        android:text="Stock"></com.google.android.material.textview.MaterialTextView>
 
                     <RelativeLayout
-                        android:id="@+id/computer_hand"
-                        android:layout_width="match_parent"
+                        android:id="@+id/stock_cards"
+                        android:layout_width="500dp"
                         android:layout_height="60dp"
                         android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_1">
-
-                        <!--                    <include-->
-                        <!--                        android:id="@+id/card_layout"-->
-                        <!--                        layout="@layout/card_with_border"-->
-                        <!--                        android:layout_width="32dp"-->
-                        <!--                        android:layout_height="match_parent"></include>-->
-                    </RelativeLayout>
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/computer_hand"
-                        android:background="@color/cardview_dark_background"
-                        android:text="Computer\nMeld"></com.google.android.material.textview.MaterialTextView>
-
-                    <RelativeLayout
-                        android:id="@+id/computer_meld"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_below="@id/computer_hand"
-                        android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_2"></RelativeLayout>
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/computer_meld"
-                        android:background="@color/cardview_dark_background"
-                        android:text="Computer\nCapture"></com.google.android.material.textview.MaterialTextView>
-
-                    <RelativeLayout
-                        android:id="@+id/computer_capture"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_below="@id/computer_meld"
-                        android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_3"></RelativeLayout>
+                        android:layout_toRightOf="@+id/text_stock"></RelativeLayout>
                 </RelativeLayout>
             </HorizontalScrollView>
-        </androidx.core.widget.NestedScrollView>
 
-        <HorizontalScrollView
-            android:id="@+id/stock_cards_scroll"
-            android:layout_width="550dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/computer_cards_scroll"
-            android:layout_marginTop="5dp"
-            android:background="@color/design_default_color_primary_dark">
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/human_cards_scroll"
+                android:layout_width="500dp"
+                android:layout_height="120dp"
+                android:layout_below="@id/stock_cards_scroll"
+                android:layout_marginTop="5dp">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:id="@+id/human_cards"
+                        android:layout_width="500dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Human\nHand"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/human_hand"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_4">
+
+                            <!--                    <include-->
+                            <!--                        android:id="@+id/card_layout"-->
+                            <!--                        layout="@layout/card_with_border"-->
+                            <!--                        android:layout_width="32dp"-->
+                            <!--                        android:layout_height="match_parent"></include>-->
+                        </RelativeLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/human_hand"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Human\nMeld"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/human_meld"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_below="@id/human_hand"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_5"></RelativeLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/human_meld"
+                            android:background="@color/cardview_dark_background"
+                            android:text="Human\nCapture"></com.google.android.material.textview.MaterialTextView>
+
+                        <RelativeLayout
+                            android:id="@+id/human_capture"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_below="@id/human_meld"
+                            android:layout_marginLeft="11dp"
+                            android:layout_toRightOf="@id/text_6"></RelativeLayout>
+                    </RelativeLayout>
+                </HorizontalScrollView>
+            </androidx.core.widget.NestedScrollView>
 
             <RelativeLayout
-                android:id="@+id/__stock_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:id="@+id/trump_card_display"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_alignTop="@+id/computer_cards_scroll"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_toEndOf="@+id/computer_cards_scroll"
+                android:layout_toRightOf="@+id/computer_cards_scroll"
+                android:background="@color/black">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/text_stock"
+                    android:id="@+id/text_trump"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/cardview_dark_background"
-                    android:text="Stock"></com.google.android.material.textview.MaterialTextView>
+                    android:text="Trump\nCard"></com.google.android.material.textview.MaterialTextView>
 
-                <RelativeLayout
-                    android:id="@+id/stock_cards"
-                    android:layout_width="550dp"
-                    android:layout_height="60dp"
-                    android:layout_marginLeft="11dp"
-                    android:layout_toRightOf="@+id/text_stock"></RelativeLayout>
-            </RelativeLayout>
-        </HorizontalScrollView>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/human_cards_scroll"
-            android:layout_width="550dp"
-            android:layout_height="120dp"
-            android:layout_below="@id/stock_cards_scroll"
-            android:layout_marginTop="5dp">
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RelativeLayout
-                    android:id="@+id/human_cards"
-                    android:layout_width="550dp"
+                <include
+                    android:id="@+id/card_trump"
+                    layout="@layout/card_with_border"
+                    android:layout_width="39dp"
                     android:layout_height="match_parent"
-                    android:background="@color/black">
+                    android:layout_marginLeft="11dp"
+                    android:layout_toRightOf="@id/text_trump"></include>
+            </RelativeLayout>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/cardview_dark_background"
-                        android:text="Human\nHand"></com.google.android.material.textview.MaterialTextView>
+            <RelativeLayout
+                android:id="@+id/thrown_cards"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_below="@id/trump_card_display"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@+id/computer_cards_scroll"
+                android:layout_toRightOf="@+id/computer_cards_scroll"
+                android:background="@color/black">
 
-                    <RelativeLayout
-                        android:id="@+id/human_hand"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_4">
+                <!--        <com.google.android.material.textview.MaterialTextView-->
+                <!--            android:id="@+id/text_thrown"-->
+                <!--            android:layout_width="wrap_content"-->
+                <!--            android:layout_height="wrap_content"-->
+                <!--            android:background="@color/cardview_dark_background"-->
+                <!--            android:text="Trump\nCard"></com.google.android.material.textview.MaterialTextView>-->
 
-                        <!--                    <include-->
-                        <!--                        android:id="@+id/card_layout"-->
-                        <!--                        layout="@layout/card_with_border"-->
-                        <!--                        android:layout_width="32dp"-->
-                        <!--                        android:layout_height="match_parent"></include>-->
-                    </RelativeLayout>
+                <include
+                    android:id="@+id/card_thrown_1"
+                    layout="@layout/card_with_border"
+                    android:layout_width="39dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="11dp"></include>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/human_hand"
-                        android:background="@color/cardview_dark_background"
-                        android:text="Human\nMeld"></com.google.android.material.textview.MaterialTextView>
+                <include
+                    android:id="@+id/card_thrown_2"
+                    layout="@layout/card_with_border"
+                    android:layout_width="39dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="11dp"
+                    android:layout_toRightOf="@+id/card_thrown_1"></include>
+            </RelativeLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/human_meld"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_below="@id/human_hand"
-                        android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_5"></RelativeLayout>
+            <Button
+                android:id="@+id/button_play_selected_cards"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@+id/thrown_cards"
+                android:layout_alignLeft="@+id/thrown_cards"
+                android:layout_toRightOf="@+id/human_cards_scroll"
+                android:text="play\nSelected\ncards"
+                android:textSize="9dp"
+                android:visibility="invisible"></Button>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/text_6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/human_meld"
-                        android:background="@color/cardview_dark_background"
-                        android:text="Human\nCapture"></com.google.android.material.textview.MaterialTextView>
+            <Button
+                android:id="@+id/button_play_meld"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_alignLeft="@+id/button_play_selected_cards"
+                android:layout_alignTop="@+id/button_play_selected_cards"
+                android:text="play\nmeld"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textSize="9dp"></Button>
 
-                    <RelativeLayout
-                        android:id="@+id/human_capture"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_below="@id/human_meld"
-                        android:layout_marginLeft="11dp"
-                        android:layout_toRightOf="@id/text_6"></RelativeLayout>
-                </RelativeLayout>
-            </HorizontalScrollView>
-        </androidx.core.widget.NestedScrollView>
-
-        <RelativeLayout
-            android:id="@+id/trump_card_display"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_alignTop="@+id/computer_cards_scroll"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_toEndOf="@+id/computer_cards_scroll"
-            android:layout_toRightOf="@+id/computer_cards_scroll"
-            android:background="@color/black">
+            <Button
+                android:id="@+id/button_skip_meld"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_alignTop="@+id/button_play_selected_cards"
+                android:layout_toRightOf="@+id/button_play_meld"
+                android:text="skip\nmeld"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textSize="9dp"></Button>
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/text_trump"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/text_help"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/button_play_selected_cards"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@id/human_cards_scroll"
                 android:background="@color/cardview_dark_background"
-                android:text="Trump\nCard"></com.google.android.material.textview.MaterialTextView>
+                android:text="Help Text"></com.google.android.material.textview.MaterialTextView>
 
-            <include
-                android:id="@+id/card_trump"
-                layout="@layout/card_with_border"
-                android:layout_width="39dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="11dp"
-                android:layout_toRightOf="@id/text_trump"></include>
+            <Button
+                android:id="@+id/button_ask_help"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/text_help"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_toRightOf="@+id/human_cards_scroll"
+                android:text="Ask Help"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textSize="9dp"></Button>
+
+            <Button
+                android:id="@+id/button_quit_game"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/human_cards_scroll"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Quit Game"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textSize="9dp"></Button>
+
+            <Button
+                android:id="@+id/button_save_game"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/human_cards_scroll"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@id/button_quit_game"
+                android:text="Save Game"
+                android:textSize="9dp"></Button>
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/thrown_cards"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_below="@id/trump_card_display"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/computer_cards_scroll"
-            android:layout_toRightOf="@+id/computer_cards_scroll"
-            android:background="@color/black">
-
-            <!--        <com.google.android.material.textview.MaterialTextView-->
-            <!--            android:id="@+id/text_thrown"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:background="@color/cardview_dark_background"-->
-            <!--            android:text="Trump\nCard"></com.google.android.material.textview.MaterialTextView>-->
-
-            <include
-                android:id="@+id/card_thrown_1"
-                layout="@layout/card_with_border"
-                android:layout_width="39dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="11dp"></include>
-
-            <include
-                android:id="@+id/card_thrown_2"
-                layout="@layout/card_with_border"
-                android:layout_width="39dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="11dp"
-                android:layout_toRightOf="@+id/card_thrown_1"></include>
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/button_play_selected_cards"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_below="@+id/thrown_cards"
-            android:layout_alignLeft="@+id/thrown_cards"
-            android:layout_toRightOf="@+id/human_cards_scroll"
-            android:text="play\nSelected\ncards"
-            android:textSize="9dp"
-            android:visibility="invisible"></Button>
-
-        <Button
-            android:id="@+id/button_play_meld"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/button_play_selected_cards"
-            android:layout_alignTop="@+id/button_play_selected_cards"
-            android:text="play\nmeld"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:textSize="9dp"></Button>
-
-        <Button
-            android:id="@+id/button_skip_meld"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_alignTop="@+id/button_play_selected_cards"
-            android:layout_toRightOf="@+id/button_play_meld"
-            android:text="skip\nmeld"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:textSize="9dp"></Button>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/text_help"
-            android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_below="@+id/button_play_selected_cards"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/human_cards_scroll"
-            android:background="@color/cardview_dark_background"
-            android:text="Help Text"></com.google.android.material.textview.MaterialTextView>
-
-        <Button
-            android:id="@+id/button_ask_help"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/text_help"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_toRightOf="@+id/human_cards_scroll"
-            android:text="Ask Help"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:textSize="9dp"></Button>
-
-        <Button
-            android:id="@+id/button_quit_game"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/human_cards_scroll"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Quit Game"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-            android:textSize="9dp"></Button>
-
-        <Button
-            android:id="@+id/button_save_game"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/human_cards_scroll"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/button_quit_game"
-            android:text="Save Game"
-            android:textSize="9dp"></Button>
-    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#CC231212"
         android:clickable="true"
-        android:visibility="visible"
-        android:elevation="1dp">
+        android:elevation="1dp"
+        android:visibility="invisible">
 
         <RelativeLayout
+            android:id="@+id/frame_quit_game"
             android:layout_width="300dp"
             android:layout_height="150dp"
-            android:background="@android:color/darker_gray"
             android:layout_centerHorizontal="true"
-            android:visibility="invisible"
-            android:id="@+id/frame_quit_game"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:background="@android:color/darker_gray"
+            android:visibility="invisible">
+
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_quit_confirmation_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Are you sure?"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:id="@+id/text_quit_confirmation_prompt"></com.google.android.material.textview.MaterialTextView>
+                android:text="Are you sure?"></com.google.android.material.textview.MaterialTextView>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_quit_confirmation_prompt"
-                android:layout_marginTop="17dp"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="17dp">
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
                     android:id="@+id/button_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
                     android:text="No"></Button>
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:layout_toRightOf="@id/button_no"
                     android:layout_marginLeft="35dp"
+                    android:layout_toRightOf="@id/button_no"
                     android:text="Yes"></Button>
             </RelativeLayout>
         </RelativeLayout>
 
 
         <RelativeLayout
+            android:id="@+id/frame_save_game"
             android:layout_width="300dp"
             android:layout_height="150dp"
-            android:background="@android:color/darker_gray"
             android:layout_centerHorizontal="true"
-            android:visibility="invisible"
-            android:id="@+id/frame_save_game"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:background="@android:color/darker_gray"
+            android:visibility="invisible">
+
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_save_confirmation_prompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter Name of File you want to save to."
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:id="@+id/text_save_confirmation_prompt"></com.google.android.material.textview.MaterialTextView>
+                android:text="Enter Name of File you want to save to."></com.google.android.material.textview.MaterialTextView>
+
             <EditText
+                android:id="@+id/save_text_input"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
-                android:background="@color/cardview_dark_background"
+                android:layout_below="@+id/text_save_confirmation_prompt"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
-                android:layout_below="@+id/text_save_confirmation_prompt"
-                android:id="@+id/save_text_input"></EditText>
+                android:background="@color/cardview_dark_background"></EditText>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/save_text_input"
-                android:layout_marginTop="15dp"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp">
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
                     android:id="@+id/button_no_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
                     android:text="Cancel"></Button>
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:layout_toRightOf="@id/button_no_save"
                     android:layout_marginLeft="35dp"
+                    android:layout_toRightOf="@id/button_no_save"
                     android:text="Save"></Button>
             </RelativeLayout>
         </RelativeLayout>
 
 
         <RelativeLayout
+            android:id="@+id/frame_coin_toss"
             android:layout_width="300dp"
             android:layout_height="150dp"
-            android:background="@android:color/darker_gray"
             android:layout_centerHorizontal="true"
-            android:visibility="visible"
-            android:id="@+id/frame_coin_toss"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:background="@android:color/darker_gray"
+            android:visibility="visible">
+
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_coin_toss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Coin Toss! Please Choose"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:id="@+id/text_coin_toss"></com.google.android.material.textview.MaterialTextView>
+                android:text="Coin Toss! Please Choose"></com.google.android.material.textview.MaterialTextView>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_coin_toss"
-                android:visibility="invisible"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="17dp"
-                android:layout_centerHorizontal="true">
+                android:visibility="invisible">
+
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
                     android:id="@+id/button_heads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
                     android:text="Heads"></Button>
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:layout_toRightOf="@id/button_heads"
                     android:layout_marginLeft="35dp"
+                    android:layout_toRightOf="@id/button_heads"
                     android:text="Tails"></Button>
             </RelativeLayout>
 
@@ -475,20 +485,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text_coin_toss"
-                android:layout_marginTop="17dp"
-                android:layout_centerHorizontal="true">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="17dp">
+
                 <TextView
+                    android:id="@+id/coin_toss_result_prompt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/coin_toss_result_prompt"
                     android:layout_centerVertical="true"
                     android:text="Human Won!"></TextView>
+
                 <Button
+                    android:id="@+id/button_coin_toss_continue"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:layout_toRightOf="@id/coin_toss_result_prompt"
                     android:layout_marginLeft="35dp"
-                    android:id="@+id/button_coin_toss_continue"
+                    android:layout_toRightOf="@id/coin_toss_result_prompt"
                     android:text="Continue"></Button>
             </RelativeLayout>
         </RelativeLayout>

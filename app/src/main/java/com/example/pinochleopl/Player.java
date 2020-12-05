@@ -47,9 +47,13 @@ public class Player {
         return this.hand_card_pile.get(index);
     }
 
-    public String get_hand_pile_string() {
-        return "";
-    }
+    public String get_hand_pile_string() { return ""; }
+
+    public String get_capture_pile_string() { return ""; }
+
+    public String get_meld_string() { return ""; }
+
+
 
     public void remove_card_from_pile(int card_index) {
         for (ArrayList<Integer> removal_index_to_meld_pointer_triplet : this.hand_meld_involvement_list.get(card_index)) {
@@ -81,5 +85,9 @@ public class Player {
         this.hand_card_pile.remove(this.hand_card_pile.size() - 1);
         this.hand_meld_involvement_list.set(card_index, this.hand_meld_involvement_list.get(this.hand_meld_involvement_list.size() - 1));
         this.hand_meld_involvement_list.remove(this.hand_meld_involvement_list.size() - 1);
+    }
+
+    public int get_meld_type_12_from_cards(ArrayList<Integer> card_ids) {
+        return -1;
     }
 }
