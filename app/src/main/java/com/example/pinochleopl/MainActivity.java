@@ -14,11 +14,14 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout frameLayout;
     FrameLayout frameLayout2;
     boolean bordered = false;
+
+    Deck deck;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         image_button_stuff();
+        deck = new Deck();
     }
 
     private void image_button_stuff() {
