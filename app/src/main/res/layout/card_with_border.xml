@@ -6,13 +6,13 @@
     >
 
     <ImageButton
-        android:id="@+id/ib2"
+        android:id="@+id/card_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="0dp"
         android:scaleType="fitXY"
         android:clickable="false"
-        android:src="@drawable/two_c" />
+        />
 
     <ImageButton
         android:id="@+id/black_highlight"
@@ -32,6 +32,6 @@
         android:padding="0dp"
         android:src="@null"
         android:clickable="false"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:background="@drawable/green_border"></ImageButton>
     </FrameLayout>

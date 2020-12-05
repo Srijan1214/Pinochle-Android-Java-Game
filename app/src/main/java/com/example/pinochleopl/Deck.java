@@ -5,12 +5,11 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Deck {
-    public static final int TOTAL_NO_OF_CARDS = 48;
     private ArrayList<Integer> stock;
 
     public Deck() {
         this.stock = new ArrayList<Integer>();
-        for (int i = 0; i < TOTAL_NO_OF_CARDS; i++) {
+        for (int i = 0; i < Constants.TOTAL_NO_OF_CARDS; i++) {
             this.stock.add(i);
         }
         Collections.shuffle(this.stock, new Random(5));

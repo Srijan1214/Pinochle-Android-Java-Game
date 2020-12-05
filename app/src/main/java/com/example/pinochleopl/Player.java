@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 public class Player {
 
-    private static final int TOTAL_NO_OF_CARDS = Deck.TOTAL_NO_OF_CARDS;
-    private static final int NO_OF_SAME_CARDS = Card.NO_OF_SAME_CARDS;
-    private static final int NO_OF_CARDS_PER_SUIT = TOTAL_NO_OF_CARDS / 4;
-
     private ArrayList<Integer> hand_card_pile;
     private ArrayList<ArrayList<ArrayList<Integer>>> hand_meld_involvement_list;
     private ArrayList<ArrayList<ArrayList<Integer>>> current_meld_cards;
@@ -21,6 +17,15 @@ public class Player {
         this.hand_meld_involvement_list = new ArrayList<ArrayList<ArrayList<Integer>>>();
         this.current_meld_cards = new ArrayList<ArrayList<ArrayList<Integer>>>(12);
         this.capture_pile = new ArrayList<Integer>();
+    }
+
+    public PlayerCardData get_cards_for_drawing() {
+        PlayerCardData playerCardData = new PlayerCardData();
+        playerCardData.hand_card_pile = this.hand_card_pile;
+        playerCardData.hand_meld_involvement_list = this.hand_meld_involvement_list;
+        playerCardData.current_meld_cards = this.current_meld_cards;
+        playerCardData.capture_pile = this.capture_pile;
+        return playerCardData;
     }
 
     public void give_card_to_player(int a_card_id) {

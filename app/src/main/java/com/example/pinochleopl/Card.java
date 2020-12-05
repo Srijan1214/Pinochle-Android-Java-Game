@@ -1,8 +1,6 @@
 package com.example.pinochleopl;
 
 public class Card {
-    public final static int NO_OF_CARDS_PER_SUIT = 12;
-    public final static int NO_OF_SAME_CARDS = 2;
     private final static int[] FACE_WEIGHTS = {0, 10, 2, 3, 4, 11};
     private final static char[] FACE_CHAR_ARRAY = {'9', 'X', 'J', 'Q', 'K', 'A'};
     private final static char[] SUIT_CHAR_ARRAY = {'S', 'C', 'H', 'D'};
@@ -20,15 +18,15 @@ public class Card {
     public final static int DIAMONDS_SUIT = 3;
 
     public static int get_face_from_id(int id) {
-        return (int) ((id % NO_OF_CARDS_PER_SUIT) / NO_OF_SAME_CARDS);
+        return (int) ((id % Constants.NO_OF_CARDS_PER_SUIT) / Constants.NO_OF_SAME_CARDS);
     }
 
     public static int get_suit_from_id(int id) {
-        return (int) (id / NO_OF_CARDS_PER_SUIT);
+        return (int) (id / Constants.NO_OF_CARDS_PER_SUIT);
     }
 
     public static int get_id_from_face_and_suit(int face, int suit) {
-        return (int) (suit * NO_OF_CARDS_PER_SUIT + face * NO_OF_SAME_CARDS);
+        return (int) (suit * Constants.NO_OF_CARDS_PER_SUIT + face * Constants.NO_OF_SAME_CARDS);
     }
 
     public static int get_face_weight_from_id(int id) {
@@ -83,7 +81,7 @@ public class Card {
                 suit_val = -1;
         }
 
-        return suit_val * NO_OF_CARDS_PER_SUIT + face_val * NO_OF_SAME_CARDS;
+        return suit_val * Constants.NO_OF_CARDS_PER_SUIT + face_val * Constants.NO_OF_SAME_CARDS;
     }
 
     public static boolean is_first_card_greater_than_lead(int card_first, int card_lead, int trump_card) {

@@ -103,30 +103,30 @@
 
     <HorizontalScrollView
         android:id="@+id/stock_cards_scroll"
-        android:layout_width="wrap_content"
+        android:layout_width="483dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/computer_cards_scroll"
+        android:background="@color/design_default_color_primary_dark"
         android:layout_marginTop="5dp">
 
         <RelativeLayout
-            android:id="@+id/stock_cards"
-            android:layout_width="483dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/design_default_color_primary_dark">
-            <!--                <include-->
-            <!--                    android:layout_width="39dp"-->
-            <!--                    android:layout_height="60dp"-->
-            <!--                    android:id="@+id/card_layout"-->
-            <!--                    layout="@layout/card_with_border"-->
-            <!--                    ></include>-->
-            <!--                <include-->
-            <!--                    android:layout_width="39dp"-->
-            <!--                    android:layout_height="60dp"-->
-            <!--                    android:id="@+id/second"-->
-            <!--                    layout="@layout/card_with_border"-->
-            <!--                    android:layout_marginLeft="20dp"-->
-            <!--                    ></include>-->
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/__stock_wrapper">
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_dark_background"
+                android:text="Stock"></com.google.android.material.textview.MaterialTextView>
+
+            <RelativeLayout
+                android:id="@+id/stock_cards"
+                android:layout_width="483dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="11dp"
+                android:layout_toRightOf="@+id/text_stock">
+            </RelativeLayout>
         </RelativeLayout>
     </HorizontalScrollView>
 

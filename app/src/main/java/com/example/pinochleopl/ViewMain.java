@@ -44,7 +44,7 @@ public class ViewMain extends View implements View.OnClickListener {
     }
 
     private void init(@Nullable AttributeSet set) {
-        mImage = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.two_c), IMAGE_WIDTH, IMAGE_HEIGHT);
+//        mImage = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.two_c), IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     @Override
@@ -65,7 +65,6 @@ public class ViewMain extends View implements View.OnClickListener {
         matrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
 
         return  Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
     }
 
     @Override

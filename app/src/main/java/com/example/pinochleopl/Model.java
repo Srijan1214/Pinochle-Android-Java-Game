@@ -1,5 +1,7 @@
 package com.example.pinochleopl;
 
+import java.util.ArrayList;
+
 public class Model {
     private int[] round_scores;
     private int[] prev_cumulative_scores;
@@ -38,6 +40,14 @@ public class Model {
             }
         }
         this.pick_up_trump_card();
+    }
+
+    public PlayerCardData[] get_players_card_data() {
+        return new PlayerCardData[]{player_1.get_cards_for_drawing(), player_2.get_cards_for_drawing()};
+    }
+
+    public ArrayList<Integer> get_stock_data() {
+        return this.deck.get_stock_pile();
     }
 
     private void pick_up_trump_card() {
