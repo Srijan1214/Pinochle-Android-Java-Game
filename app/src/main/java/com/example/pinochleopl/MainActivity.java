@@ -3,6 +3,7 @@ package com.example.pinochleopl;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -60,14 +61,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        image_button_stuff();
+        Intent intent = getIntent();
+        boolean should_load_from_file = intent.getBooleanExtra(StartScreenActivity.INTENT_SHOULD_LOAD_FROM_FILE, false);
+        String load_file_name = intent.getStringExtra(StartScreenActivity.INTENT_FILE_NAME);
+
         initialize_members();
         load_card_bitmaps();
+
+        if(should_load_from_file) {
+            this.model.load_game_from_file(load_file_name, getApplicationContext());
+        }
 
         this.model.start_new_round(1);
         redraw_cards();
 //        deleteFile("asdasdasdasdasdq2233123123123");
-//        System.out.println(Arrays.asList(fileList()));
     }
 
     private void initialize_members() {
