@@ -10,9 +10,9 @@ import java.util.ConcurrentModificationException;
 
 public class Player {
 
-    private ArrayList<Integer> hand_card_pile;
-    private ArrayList<ArrayList<ArrayList<Integer>>> hand_meld_involvement_list;
-    private ArrayList<ArrayList<ArrayList<Integer>>> current_meld_cards;
+    protected ArrayList<Integer> hand_card_pile;
+    protected ArrayList<ArrayList<ArrayList<Integer>>> hand_meld_involvement_list;
+    protected ArrayList<ArrayList<ArrayList<Integer>>> current_meld_cards;
     private ArrayList<Integer> capture_pile;
 
     private boolean[][] which_card_used_for_meld;
@@ -259,7 +259,7 @@ public class Player {
         }
     }
 
-    private Pair<Integer, Integer> find_index_meld_pair_of_card_to_throw() {
+    protected Pair<Integer, Integer> find_index_meld_pair_of_card_to_throw() {
         int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
 
         this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
@@ -274,7 +274,7 @@ public class Player {
         return ret_pair;
     }
 
-    private Pair<ArrayList<Integer>, Integer> get_card_ids_and_meld_number_12_best_meld() {
+    protected Pair<ArrayList<Integer>, Integer> get_card_ids_and_meld_number_12_best_meld() {
         int[][] meld_logic_vector = this.get_meld_logic_vector();
 
         this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
@@ -329,7 +329,7 @@ public class Player {
         }
     }
 
-    private boolean is_meld_allowed_by_history(ArrayList<Integer> card_ids, int meld_9) {
+    protected boolean is_meld_allowed_by_history(ArrayList<Integer> card_ids, int meld_9) {
         for (int card_id : card_ids) {
             if (this.which_card_used_for_meld[meld_9][card_id] == true) {
                 return false;
@@ -338,7 +338,7 @@ public class Player {
         return true;
     }
 
-    private void update_meld_history(ArrayList<Integer> card_ids, int meld_number_9) {
+    protected void update_meld_history(ArrayList<Integer> card_ids, int meld_number_9) {
         for (int card_id : card_ids) {
             this.which_card_used_for_meld[meld_number_9][card_id] = true;
             if (meld_number_9 == Melds.FLUSH) {
@@ -347,7 +347,7 @@ public class Player {
         }
     }
 
-    private int find_index_of_smallest_card_greater_than(int card_id) {
+    protected int find_index_of_smallest_card_greater_than(int card_id) {
         int min_card_index = -1;
         int min_greatest_card_weight = 9999999;
         for (int i = 0; i < this.hand_card_pile.size(); i++) {
@@ -363,7 +363,7 @@ public class Player {
         return min_card_index;
     }
 
-    private int find_index_of_smallest_card() {
+    protected int find_index_of_smallest_card() {
         int min_card_weight = 999999;
         int min_card_index = -1;
 
@@ -379,7 +379,7 @@ public class Player {
         return min_card_index;
     }
 
-    private int find_index_of_greatest_card() {
+    protected int find_index_of_greatest_card() {
         int max_card_weight = -11111;
         int max_card_index = -1;
 
@@ -395,7 +395,7 @@ public class Player {
         return max_card_index;
     }
 
-    private int to_9(int meld_12) {
+    protected int to_9(int meld_12) {
         if (meld_12 < 2) {
             return meld_12;
         } else if (meld_12 >= 2 && meld_12 <= 5) {
@@ -405,7 +405,7 @@ public class Player {
         }
     }
 
-    private int search_card_in_pile(int card_id) {
+    protected int search_card_in_pile(int card_id) {
         return this.hand_card_pile.indexOf(card_id);
     }
 

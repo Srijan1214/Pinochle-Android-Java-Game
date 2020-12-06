@@ -1,20 +1,26 @@
 package com.example.pinochleopl;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.android.material.textview.MaterialTextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
     int CARD_HEIGHT;
     int CARD_WIDTH;
 
-    Bitmap[] id_to_bitmap;
+    private Bitmap[] id_to_bitmap;
+    private HashMap<Integer, Integer> view_id_to_hand_index;
+    private ArrayList<Integer> view_ids_selected;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 //        image_button_stuff();
         initialize_members();
         load_card_bitmaps();
-        this.model.deal_cards_from_deck_to_players();
+
+        this.model.start_new_round(0);
         redraw_cards();
     }
 
@@ -153,7 +163,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_cards() {
+        clear_all_cards();
+        this.view_ids_selected = new ArrayList<Integer>();
+        this.view_id_to_hand_index = new HashMap<Integer, Integer>();
+
+        if(this.model.is_user_input_state_meld()){
+            hide_throw_button();
+            show_meld_button();
+        } else {
+            hide_meld_button();
+            show_throw_button();
+        }
+
+        if(this.model.getModelState() == ModelState.COMPUTER_THREW_CARD) {
+            this.show_computer_threw_card_screen(this.model.getLatest_message());
+        } else if (this.model.getModelState() == ModelState.COMPUTER_PLAYED_MELD) {
+            this.show_computer_threw_meld_screen(this.model.getLatest_message());
+        }
+
         PlayerCardData[] playerCardData = this.model.get_players_card_data();
 
         this.redraw_hand_cards(Constants.HUMAN, playerCardData[Constants.HUMAN]);
@@ -166,10 +195,27 @@ public class MainActivity extends AppCompatActivity {
         this.redraw_capture_cards(Constants.COMPUTER, playerCardData[Constants.COMPUTER]);
 
         this.redraw_stock_cards(this.model.get_stock_data());
+
+        this.draw_trump_card();
     }
 
+    private void show_computer_threw_card_screen(String message) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_computer_move_message).setVisibility(View.VISIBLE);
+
+        ((TextView) findViewById(R.id.text_computer_move)).setText(message);
+    }
+
+    private void show_computer_threw_meld_screen(String message) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_computer_meld_message).setVisibility(View.VISIBLE);
+
+        ((TextView) findViewById(R.id.text_computer_meld)).setText(message);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_hand_cards(int player_num, PlayerCardData playerCardData) {
-        int dx = (int) (20 * this.getResources().getDisplayMetrics().density);
+        int dx = (int) (30 * this.getResources().getDisplayMetrics().density);
         int left_margin = 0;
 
         for (int i = 0; i < playerCardData.hand_card_pile.size(); i++) {
@@ -183,7 +229,13 @@ public class MainActivity extends AppCompatActivity {
             layoutParams.setMargins(left_margin, 0, 0, 0);
             frameLayout.setLayoutParams(layoutParams);
             if (player_num == Constants.HUMAN) {
+                frameLayout.setOnClickListener(this.listener_card_click());
+                int id = View.generateViewId();
+                frameLayout.setId(id);
+                this.view_id_to_hand_index.put(id, i);
                 this.human_hand_cards_layout.addView(frameLayout);
+                System.out.println(human_hand_cards_layout.getId());
+
             } else {
                 this.computer_hand_cards_layout.addView(frameLayout);
             }
@@ -191,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_meld_cards(int player_num, PlayerCardData playerCardData) {
         int dx = (int) (20 * this.getResources().getDisplayMetrics().density);
         int left_margin = 0;
@@ -205,6 +258,10 @@ public class MainActivity extends AppCompatActivity {
                     layoutParams.setMargins(left_margin, 0, 0, 0);
                     frameLayout.setLayoutParams(layoutParams);
                     if (player_num == Constants.HUMAN) {
+                        frameLayout.setOnClickListener(this.listener_card_click());
+                        int id = View.generateViewId();
+                        frameLayout.setId(id);
+                        this.view_id_to_hand_index.put(id, hand_index);
                         this.human_meld_cards_layout.addView(frameLayout);
                     } else {
                         this.computer_meld_cards_layout.addView(frameLayout);
@@ -247,29 +304,43 @@ public class MainActivity extends AppCompatActivity {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
             layoutParams.setMargins(left_margin, 0, 0, 0);
             frameLayout.setLayoutParams(layoutParams);
-            View.OnClickListener onClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.bringToFront();
-                    clear_all_cards();
-                    new android.os.Handler().postDelayed(
-                            new Runnable() {
-                                public void run() {
-                                    long start = System.currentTimeMillis();
-                                    redraw_cards();
-                                    long finish = System.currentTimeMillis();
-                                    long timeElapsed = finish - start;
-                                    System.out.println(timeElapsed);
-                                }
-                            },
-                            300);
-                    System.out.println("Removed Cadrdsda!!!!");
-                }
-            };
-            frameLayout.setOnClickListener(onClickListener);
             this.stock_cards_layout.addView(frameLayout);
             left_margin += dx;
         }
+    }
+
+    private void draw_trump_card(){
+        if(this.model.isTrump_card_be_shown()) {
+            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(
+                    id_to_bitmap[this.model.getTrump_card()]
+            );
+        } else {
+            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setBackgroundResource(0);;
+        }
+    }
+
+    private View.OnClickListener listener_card_click() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!view_ids_selected.contains(v.getId())) {
+                    if (!model.is_user_input_state_meld()) {
+                        for (int view_id : view_ids_selected) {
+                            view_ids_selected.remove(new Integer(view_id));
+                            findViewById(view_id).findViewById(R.id.black_highlight).setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    view_ids_selected.add(v.getId());
+                    v.findViewById(R.id.black_highlight).setVisibility(View.VISIBLE);
+                    v.bringToFront();
+                    System.out.println("highlight");
+                } else {
+                    view_ids_selected.remove(new Integer(v.getId()));
+                    v.findViewById(R.id.black_highlight).setVisibility(View.INVISIBLE);
+                    System.out.println("remove");
+                }
+            }
+        };
     }
 
     private void clear_all_cards() {
@@ -282,40 +353,83 @@ public class MainActivity extends AppCompatActivity {
         this.computer_capture_cards_layout.removeAllViews();
     }
 
-    private void image_button_stuff() {
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.stock_cards);
-        RelativeLayout hand_cards = (RelativeLayout) findViewById(R.id.computer_cards);
+    private void hide_meld_button() {
+        findViewById(R.id.button_play_meld).setVisibility(View.INVISIBLE);
+        findViewById(R.id.button_skip_meld).setVisibility(View.INVISIBLE);
+    }
 
-        int card_height = (int) (60 * this.getResources().getDisplayMetrics().density);
-        int card_width = (int) ((691 * card_height) / 1056);
-        layoutInflater = getLayoutInflater();
-        frameLayout = (FrameLayout) layoutInflater.inflate(R.layout.card_with_border, null);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(card_width, card_height);
-        layoutParams.setMargins(10, 0, 0, 0);
-        frameLayout.setLayoutParams(layoutParams);
-        rl.addView(frameLayout);
+    private void show_meld_button() {
+        findViewById(R.id.button_play_meld).setVisibility(View.VISIBLE);
+        findViewById(R.id.button_skip_meld).setVisibility(View.VISIBLE);
+    }
 
-        frameLayout2 = (FrameLayout) layoutInflater.inflate(R.layout.card_with_border, null);
-        RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(card_width, card_height);
-        layoutParams2.setMargins(100, 0, 0, 0);
-        frameLayout2.setLayoutParams(layoutParams2);
-        rl.addView(frameLayout2);
+    private void hide_throw_button() {
+        findViewById(R.id.button_play_selected_cards).setVisibility(View.INVISIBLE);
+    }
 
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.findViewById(R.id.black_highlight).setVisibility(View.VISIBLE);
-                try {
-                    hand_cards.removeView(v);
-                    rl.addView(v);
-                } catch (Exception e) {
-                }
-                v.bringToFront();
-                System.out.println("Clicked!!!");
-                System.out.println(v.getId());
-            }
-        };
-        frameLayout.setOnClickListener(onClickListener);
-        frameLayout2.setOnClickListener(onClickListener);
+    private void show_throw_button() {
+        findViewById(R.id.button_play_selected_cards).setVisibility(View.VISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_play_card(View v) {
+        if(this.view_ids_selected.isEmpty()) {
+            return;
+        }
+        int view_id = this.view_ids_selected.get(0);
+        int card_index = this.view_id_to_hand_index.get(view_id);
+        this.model.handler_throw_card(card_index);
+        this.redraw_cards();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_computer_throw_continue(View v) {
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_computer_move_message).setVisibility(View.INVISIBLE);
+
+
+        System.out.println("cllllllll");
+        this.model.continue_turn_loop();
+        this.redraw_cards();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_computer_meld_continue(View v) {
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_computer_meld_message).setVisibility(View.INVISIBLE);
+
+
+        this.model.go_to_next_turn();
+        this.redraw_cards();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_play_melds(View v) {
+        ArrayList<Integer> indexes = (ArrayList<Integer>) this.view_ids_selected.clone();
+        for (int i = 0; i < indexes.size(); i++) {
+            indexes.set(i, this.view_id_to_hand_index.get(indexes.get(i)));
+        }
+
+        if(this.model.handler_play_meld(indexes) == -1){
+            ((MaterialTextView)findViewById(R.id.text_help)).setText("Invalid Meld");
+        } else {
+            ((MaterialTextView)findViewById(R.id.text_help)).setText("");
+        }
+        this.redraw_cards();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_skip_meld(View v) {
+        ((MaterialTextView)findViewById(R.id.text_help)).setText("");
+        this.model.go_to_next_turn();
+        this.redraw_cards();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_ask_help(View v) {
+        ((MaterialTextView)findViewById(R.id.text_help)).setText(
+                this.model.handler_ask_help()
+        );
     }
 }

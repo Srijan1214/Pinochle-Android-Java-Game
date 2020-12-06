@@ -289,6 +289,7 @@
                 android:layout_toRightOf="@+id/human_cards_scroll"
                 android:text="play\nSelected\ncards"
                 android:textSize="9dp"
+                android:onClick="listener_play_card"
                 android:visibility="invisible"></Button>
 
             <Button
@@ -298,6 +299,7 @@
                 android:layout_alignLeft="@+id/button_play_selected_cards"
                 android:layout_alignTop="@+id/button_play_selected_cards"
                 android:text="play\nmeld"
+                android:onClick="listener_btn_play_melds"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="9dp"></Button>
 
@@ -308,6 +310,7 @@
                 android:layout_alignTop="@+id/button_play_selected_cards"
                 android:layout_toRightOf="@+id/button_play_meld"
                 android:text="skip\nmeld"
+                android:onClick="listener_btn_skip_meld"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="9dp"></Button>
 
@@ -330,6 +333,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_toRightOf="@+id/human_cards_scroll"
                 android:text="Ask Help"
+                android:onClick="listener_btn_ask_help"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="9dp"></Button>
 
@@ -362,6 +366,7 @@
         android:background="#CC231212"
         android:clickable="true"
         android:elevation="1dp"
+        android:id="@+id/overlay"
         android:visibility="invisible">
 
         <RelativeLayout
@@ -544,6 +549,7 @@
                     android:layout_height="60dp"
                     android:layout_marginLeft="25dp"
                     android:layout_toRightOf="@id/text_computer_move"
+                    android:onClick="listener_btn_computer_throw_continue"
                     android:text="Continue"></Button>
             </RelativeLayout>
         </RelativeLayout>
@@ -576,6 +582,7 @@
                     android:layout_height="60dp"
                     android:layout_marginLeft="25dp"
                     android:layout_toRightOf="@id/text_computer_meld"
+                    android:onClick="listener_btn_computer_meld_continue"
                     android:text="Continue"></Button>
             </RelativeLayout>
         </RelativeLayout>
