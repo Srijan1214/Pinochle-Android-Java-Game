@@ -12,7 +12,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/text_round_number"
-                android:layout_width="100dp"
+                android:layout_width="150dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginLeft="30dp"
@@ -22,7 +22,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/score_human"
-            android:layout_width="100dp"
+            android:layout_width="170dp"
             android:layout_height="30dp"
             android:layout_marginStart="100dp"
             android:layout_marginLeft="100dp"
@@ -318,7 +318,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/text_help"
                 android:layout_width="200dp"
-                android:layout_height="30dp"
+                android:layout_height="100dp"
                 android:layout_below="@+id/button_play_selected_cards"
                 android:layout_marginLeft="30dp"
                 android:layout_toRightOf="@id/human_cards_scroll"
@@ -331,7 +331,7 @@
                 android:layout_height="50dp"
                 android:layout_below="@id/text_help"
                 android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/human_cards_scroll"
                 android:text="Ask Help"
                 android:onClick="listener_btn_ask_help"
@@ -346,6 +346,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Quit Game"
+                android:onClick="listener_btn_quit_game"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:textSize="9dp"></Button>
 
@@ -358,6 +359,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/button_quit_game"
                 android:text="Save Game"
+                android:onClick="listener_btn_save_game"
                 android:textSize="9dp"></Button>
         </RelativeLayout>
 
@@ -398,6 +400,7 @@
                     android:id="@+id/button_no"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
+                    android:onClick="listener_btn_quit_game_no"
                     android:text="No"></Button>
 
                 <Button
@@ -405,6 +408,7 @@
                     android:layout_height="60dp"
                     android:layout_marginLeft="35dp"
                     android:layout_toRightOf="@id/button_no"
+                    android:onClick="listener_btn_quit_game_yes"
                     android:text="Yes"></Button>
             </RelativeLayout>
         </RelativeLayout>
@@ -447,6 +451,7 @@
                     android:id="@+id/button_no_save"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
+                    android:onClick="listener_btn_save_no"
                     android:text="Cancel"></Button>
 
                 <Button
@@ -454,6 +459,7 @@
                     android:layout_height="60dp"
                     android:layout_marginLeft="35dp"
                     android:layout_toRightOf="@id/button_no_save"
+                    android:onClick="listener_btn_save_yes"
                     android:text="Save"></Button>
             </RelativeLayout>
         </RelativeLayout>
@@ -585,6 +591,83 @@
                     android:layout_toRightOf="@id/text_computer_meld"
                     android:onClick="listener_btn_computer_meld_continue"
                     android:text="Continue"></Button>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/frame_round_end"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/darker_gray"
+            android:visibility="invisible">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/text_round_end_message"
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    android:layout_centerVertical="true"
+                    android:text="Round end message!"></TextView>
+
+                <Button
+                    android:id="@+id/button_another_round"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_toRightOf="@id/text_round_end_message"
+                    android:onClick="listener_btn_another_round"
+                    android:background="@color/green"
+                    android:text="Another\nRound"></Button>
+                <Button
+                    android:id="@+id/button_end_game"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/text_round_end_message"
+                    android:layout_below="@+id/button_another_round"
+                    android:onClick="listener_btn_end_game"
+                    android:text="End\nGame"></Button>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/frame_game_end"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/darker_gray"
+            android:visibility="invisible">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="17dp">
+
+                <TextView
+                    android:id="@+id/text_game_end"
+                    android:layout_width="140dp"
+                    android:layout_height="120dp"
+                    android:layout_centerVertical="true"
+                    android:text="Game End TExt"></TextView>
+
+                <Button
+                    android:id="@+id/button_game_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_toRightOf="@id/text_game_end"
+                    android:onClick="listener_btn_computer_throw_continue"
+                    android:text="End Game"></Button>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

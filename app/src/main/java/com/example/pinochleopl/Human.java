@@ -5,11 +5,15 @@ import android.util.Pair;
 import java.util.ArrayList;
 
 public class Human extends Player {
-    public String get_meld_help_message() {
+    public Pair<String, ArrayList<Integer>> get_meld_help_message() {
         Pair<ArrayList<Integer>, Integer> recommended_meld = this.get_card_ids_and_meld_number_12_best_meld();
         ArrayList<Integer> meld_card_ids = (ArrayList<Integer>) recommended_meld.first.clone();
         int recommended_meld_number_12 = recommended_meld.second;
         int recommended_meld_number_9 = this.to_9(recommended_meld_number_12);
+        ArrayList<Integer> meld_card_indexes = (ArrayList<Integer>) meld_card_ids.clone();
+        for (int i = 0; i < meld_card_indexes.size(); i++) {
+            meld_card_indexes.set(i, this.search_card_in_pile(meld_card_indexes.get(i)));
+        }
         String message = "";
         if (recommended_meld_number_9 != Melds.INVALID) {
             message = "Recommend you present ";
@@ -20,14 +24,14 @@ public class Human extends Player {
                     "as a "
                             + Melds.get_meld_name(recommended_meld_number_9)
                             + "to earn" + Melds.get_meld_score(recommended_meld_number_9) + " points");
-            return message;
+            return new Pair<>(message, meld_card_indexes);
         } else {
-            return " You have no melds.";
+            return new Pair<>(" You have no melds.", meld_card_indexes);
         }
     }
 
-    public String get_card_to_throw_help_message(int lead_card) {
-        int index = -1;
+    public Pair<String, ArrayList<Integer>> get_card_to_throw_help_message(int lead_card) {
+        int index;
         String message = "Recommend you play ";
         if (lead_card == -1) {
             Pair<Integer, Integer> recommended_card_with_best_meld = this.find_index_meld_pair_of_card_to_throw();
@@ -57,7 +61,9 @@ public class Human extends Player {
                 message += "which is the smallest card greater\\n than the lead card";
             }
         }
-        return message;
+        ArrayList<Integer> ret_list = new ArrayList<Integer>();
+        ret_list.add(index);
+        return new Pair<String, ArrayList<Integer>>(message, ret_list);
     }
 
     public int perform_meld_if_valid(ArrayList<Integer> card_indexes) {

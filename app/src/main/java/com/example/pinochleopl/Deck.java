@@ -27,6 +27,9 @@ public class Deck {
         return this.stock.size();
     }
 
+    public String get_stock_string(){
+        return "";
+    }
     public ArrayList<Integer> get_stock_pile(){
         return (ArrayList<Integer>) this.stock.clone();
     }

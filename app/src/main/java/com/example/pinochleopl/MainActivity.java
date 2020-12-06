@@ -9,6 +9,9 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,13 +23,14 @@ import com.google.android.material.textview.MaterialTextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     LayoutInflater layoutInflater;
     FrameLayout frameLayout;
-    FrameLayout frameLayout2;
 
     RelativeLayout stock_cards_layout;
     RelativeLayout human_hand_cards_layout;
@@ -36,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout computer_meld_cards_layout;
     RelativeLayout computer_capture_cards_layout;
 
+    MaterialTextView text_human_scores;
+    MaterialTextView text_computer_scores;
+    MaterialTextView text_round_number;
+
     Model model;
 
     int CARD_HEIGHT;
@@ -44,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap[] id_to_bitmap;
     private Bitmap empty_card;
     private HashMap<Integer, Integer> view_id_to_hand_index;
+    private int[] id_to_view_id;
     private ArrayList<Integer> view_ids_selected;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,8 +64,10 @@ public class MainActivity extends AppCompatActivity {
         initialize_members();
         load_card_bitmaps();
 
-        this.model.start_new_round(0);
+        this.model.start_new_round(1);
         redraw_cards();
+//        deleteFile("asdasdasdasdasdq2233123123123");
+//        System.out.println(Arrays.asList(fileList()));
     }
 
     private void initialize_members() {
@@ -67,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
         this.computer_hand_cards_layout = (RelativeLayout) findViewById(R.id.computer_hand);
         this.computer_meld_cards_layout = (RelativeLayout) findViewById(R.id.computer_meld);
         this.computer_capture_cards_layout = (RelativeLayout) findViewById(R.id.computer_capture);
+
+
+        this.text_human_scores = (MaterialTextView) findViewById(R.id.score_human);
+        this.text_computer_scores = (MaterialTextView) findViewById(R.id.score_computer);
+        text_round_number = (MaterialTextView) findViewById(R.id.text_round_number);
 
         this.model = new Model();
 
@@ -163,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
             id_to_bitmap[i + 1] = id_to_bitmap[i];
         }
 
-        empty_card = BitmapFactory.decodeResource(getResources(),R.drawable.empty_card);
+        empty_card = BitmapFactory.decodeResource(getResources(), R.drawable.empty_card);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -171,8 +187,9 @@ public class MainActivity extends AppCompatActivity {
         clear_all_cards();
         this.view_ids_selected = new ArrayList<Integer>();
         this.view_id_to_hand_index = new HashMap<Integer, Integer>();
+        this.id_to_view_id = new int[Constants.TOTAL_NO_OF_CARDS];
 
-        if(this.model.is_user_input_state_meld()){
+        if (this.model.is_user_input_state_meld()) {
             hide_throw_button();
             show_meld_button();
         } else {
@@ -180,10 +197,12 @@ public class MainActivity extends AppCompatActivity {
             show_throw_button();
         }
 
-        if(this.model.getModelState() == ModelState.COMPUTER_THREW_CARD) {
+        if (this.model.getModelState() == ModelState.COMPUTER_THREW_CARD) {
             this.show_computer_threw_card_screen(this.model.getLatest_message());
         } else if (this.model.getModelState() == ModelState.COMPUTER_PLAYED_MELD) {
             this.show_computer_threw_meld_screen(this.model.getLatest_message());
+        } else if (this.model.getModelState() == ModelState.ROUND_ENDED) {
+            this.show_round_end_screen();
         }
 
         PlayerCardData[] playerCardData = this.model.get_players_card_data();
@@ -199,7 +218,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.redraw_stock_cards(this.model.get_stock_data());
 
+        this.redraw_scores();
+        this.redraw_round_number();
         this.draw_trump_card();
+        this.clear_help_message();
     }
 
     private void show_computer_threw_card_screen(String message) {
@@ -214,6 +236,28 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.frame_computer_meld_message).setVisibility(View.VISIBLE);
 
         ((TextView) findViewById(R.id.text_computer_meld)).setText(message);
+    }
+
+    private void show_round_end_screen() {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_round_end).setVisibility(View.VISIBLE);
+
+        String message = "";
+        int human_round_score = this.model.getRound_scores()[Constants.HUMAN];
+        int computer_round_score = this.model.getRound_scores()[Constants.COMPUTER];
+
+        message += ("Human Round Score: " + human_round_score + ", Computer Round Score: " +
+                computer_round_score);
+        if (human_round_score > computer_round_score) {
+            message += " Human Won Round";
+        } else if (computer_round_score > human_round_score) {
+            message += " Computer Won Round";
+        } else {
+            message += " Round Draw";
+        }
+        ((TextView) findViewById(R.id.text_round_end_message)).setText(
+                message
+        );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -236,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = View.generateViewId();
                 frameLayout.setId(id);
                 this.view_id_to_hand_index.put(id, i);
+                this.id_to_view_id[i] = id;
                 this.human_hand_cards_layout.addView(frameLayout);
                 System.out.println(human_hand_cards_layout.getId());
 
@@ -265,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                         int id = View.generateViewId();
                         frameLayout.setId(id);
                         this.view_id_to_hand_index.put(id, hand_index);
+                        this.id_to_view_id[hand_index] = id;
                         this.human_meld_cards_layout.addView(frameLayout);
                     } else {
                         this.computer_meld_cards_layout.addView(frameLayout);
@@ -312,14 +358,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void draw_trump_card(){
-        if(this.model.isTrump_card_be_shown()) {
-            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(
+    private void draw_trump_card() {
+        if (this.model.isTrump_card_be_shown()) {
+            ((ImageButton) (findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(
                     id_to_bitmap[this.model.getTrump_card()]
             );
         } else {
-            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(empty_card);
+            ((ImageButton) (findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(empty_card);
         }
+    }
+
+    private void redraw_scores() {
+        this.text_human_scores.setText(
+                "Human Scores: " + this.model.getRound_scores()[0] + " / " + this.model.getPrev_cumulative_scores()[0]
+        );
+
+        this.text_computer_scores.setText(
+                "Computer Scores: " + this.model.getRound_scores()[1] + " / " + this.model.getPrev_cumulative_scores()[1]
+        );
+    }
+
+    private void redraw_round_number() {
+        this.text_round_number.setText(
+                "Round Number: " + this.model.getRound_number()
+        );
+    }
+
+    private void clear_help_message() {
+        ((MaterialTextView) findViewById(R.id.text_help)).setText("");
     }
 
     private View.OnClickListener listener_card_click() {
@@ -376,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_play_card(View v) {
-        if(this.view_ids_selected.isEmpty()) {
+        if (this.view_ids_selected.isEmpty()) {
             return;
         }
         int view_id = this.view_ids_selected.get(0);
@@ -414,25 +480,112 @@ public class MainActivity extends AppCompatActivity {
             indexes.set(i, this.view_id_to_hand_index.get(indexes.get(i)));
         }
 
-        if(this.model.handler_play_meld(indexes) == -1){
-            ((MaterialTextView)findViewById(R.id.text_help)).setText("Invalid Meld");
+        if (this.model.handler_play_meld(indexes) == -1) {
+            ((MaterialTextView) findViewById(R.id.text_help)).setText("Invalid Meld");
         } else {
-            ((MaterialTextView)findViewById(R.id.text_help)).setText("");
+            ((MaterialTextView) findViewById(R.id.text_help)).setText("");
         }
         this.redraw_cards();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_skip_meld(View v) {
-        ((MaterialTextView)findViewById(R.id.text_help)).setText("");
+        ((MaterialTextView) findViewById(R.id.text_help)).setText("");
         this.model.go_to_next_turn();
         this.redraw_cards();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_ask_help(View v) {
-        ((MaterialTextView)findViewById(R.id.text_help)).setText(
-                this.model.handler_ask_help()
+        Pair<String, ArrayList<Integer>> help_message = this.model.handler_ask_help();
+
+        if (!help_message.second.isEmpty()) {
+            for (int card_index : help_message.second) {
+                findViewById(this.id_to_view_id[card_index]).findViewById(
+                        R.id.green_highlight).setVisibility(View.VISIBLE);
+            }
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    for (int card_index : help_message.second) {
+                        findViewById(id_to_view_id[card_index]).findViewById(
+                                R.id.green_highlight).setVisibility(View.INVISIBLE);
+                    }
+                }
+            }, 500);
+        }
+        ((MaterialTextView) findViewById(R.id.text_help)).setText(
+                help_message.first
         );
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_another_round(View v) {
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_round_end).setVisibility(View.INVISIBLE);
+
+        this.model.start_new_round(this.model.getRound_number() + 1);
+        this.redraw_cards();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_end_game(View v) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_game_end).setVisibility(View.VISIBLE);
+
+        int human_cumulative_score = this.model.getPrev_cumulative_scores()[Constants.HUMAN];
+        int computer_cumulative_score = this.model.getPrev_cumulative_scores()[Constants.COMPUTER];
+
+        String message = "Total Human Score: " + human_cumulative_score +
+                " Total Computer Score: " + computer_cumulative_score;
+        if (human_cumulative_score > computer_cumulative_score) {
+            message += " Human Won";
+        } else if (computer_cumulative_score > human_cumulative_score) {
+            message += " Computer Won";
+        } else {
+            message += " Game Draw";
+        }
+
+        this.finish();
+        System.exit(0);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_quit_game(View v) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_quit_game).setVisibility(View.VISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_quit_game_yes(View v) {
+        this.finish();
+        System.exit(0);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_quit_game_no(View v) {
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_quit_game).setVisibility(View.INVISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_save_game(View v) {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_save_game).setVisibility(View.VISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_save_no(View v) {
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_save_game).setVisibility(View.INVISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_btn_save_yes(View v) {
+        String message = ((TextView) findViewById(R.id.save_text_input)).getText().toString();
+
+        this.model.save_game(message.trim(), getApplicationContext());
+        this.finish();
+        System.exit(0);
     }
 }

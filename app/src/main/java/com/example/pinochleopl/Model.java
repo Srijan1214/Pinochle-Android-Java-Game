@@ -1,7 +1,14 @@
 package com.example.pinochleopl;
 
+import android.content.Context;
 import android.util.Pair;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Model {
@@ -197,14 +204,98 @@ public class Model {
         return -1;
     }
 
-    public String handler_ask_help() {
-        String help_msg = "";
+    public Pair<String, ArrayList<Integer>> handler_ask_help() {
         if(is_user_input_meld) {
-            help_msg = this.player_1.get_meld_help_message();
+            return this.player_1.get_meld_help_message();
         } else {
-            help_msg = this.player_1.get_card_to_throw_help_message(this.turn_lead_card);
+            return this.player_1.get_card_to_throw_help_message(this.turn_lead_card);
         }
-        return help_msg;
+    }
+
+    public void save_game(String file_name, Context ctx) {
+        FileOutputStream fos = null;
+        try {
+            fos = (ctx.openFileOutput(file_name, Context.MODE_PRIVATE));
+            fos.write(get_save_string().getBytes());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String get_save_string() {
+        String ret_string= "";
+        ret_string+= ("Round: " + this.round_number + "\n\n");
+
+        ret_string+= "Computer:\n";
+        ret_string+= ("Score: " + this.prev_cumulative_scores[Constants.COMPUTER]
+                + " / " + this.round_scores[Constants.COMPUTER] + "\n");
+        ret_string+= ("   Hand: " + this.player_2.get_hand_pile_string() + "\n");
+        ret_string+= ("   Capture Pile: " + this.player_2.get_capture_pile_string() + "\n");
+        ret_string+= ("   Melds: " + this.player_2.get_meld_string() + "\n\n");
+
+        ret_string+= "Human:\n";
+        ret_string+= ("Score: " + this.prev_cumulative_scores[Constants.HUMAN]
+                + " / " + this.round_scores[Constants.HUMAN] + "\n");
+        ret_string+= ("   Hand: " + this.player_1.get_hand_pile_string() + "\n");
+        ret_string+= ("   Capture Pile: " + this.player_1.get_capture_pile_string() + "\n");
+        ret_string+= ("   Melds: " + this.player_1.get_meld_string() + "\n\n");
+
+        if(this.trump_card_be_shown) {
+            ret_string += ("Trump Card: " + Card.get_string_from_id(trump_card) + "\n");
+        } else {
+            ret_string += ("Trump Card: " + Card.get_string_from_id(trump_card).substring(1, 2) + "\n");
+        }
+
+        ret_string+= ("Stock: " + this.deck.get_stock_string() + "\n\n");
+
+        ret_string+=("Next Player: ");
+        if(this.lead_player == Constants.COMPUTER) {
+            ret_string+="Computer";
+        } else {
+            ret_string+="Human";
+        }
+        return ret_string;
+    }
+
+    public void load_game_from_file(String file_name, Context ctx) {
+        FileInputStream fis = null;
+
+        try {
+            fis = ctx.openFileInput(file_name);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String text;
+
+            while((text = br.readLine()) != null) {
+                sb.append(text).append("\n");
+            }
+
+            System.out.println(sb.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public PlayerCardData[] get_players_card_data() {
@@ -241,6 +332,10 @@ public class Model {
 
     public boolean isTrump_card_be_shown() {
         return trump_card_be_shown;
+    }
+
+    public int getRound_number() {
+        return round_number;
     }
 
     public int getTrump_card() {
