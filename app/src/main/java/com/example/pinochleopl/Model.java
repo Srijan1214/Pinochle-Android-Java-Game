@@ -79,6 +79,9 @@ public class Model {
         this.cur_player = (this.lead_player + this.turn_number) % 2;
         if (this.cur_player == Constants.COMPUTER) {
             this.play_computer_turn();
+        } else {
+            this.modelState = ModelState.HUMAN_THROWING_CARD;
+            this.is_user_input_meld = false;
         }
 
     }
@@ -146,6 +149,7 @@ public class Model {
         if (this.deck.get_stock_size() == 1) {
             players[this.lead_player].give_card_to_player(deck.pop_card_from_deck());
             players[this.lead_player ^ 1].give_card_to_player(this.trump_card);
+            this.trump_card_be_shown = false;
         } else if (this.deck.get_stock_size() != 0) {
             players[this.lead_player].give_card_to_player(deck.pop_card_from_deck());
             players[this.lead_player ^ 1].give_card_to_player(deck.pop_card_from_deck());

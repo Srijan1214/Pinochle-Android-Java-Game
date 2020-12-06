@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     int CARD_WIDTH;
 
     private Bitmap[] id_to_bitmap;
+    private Bitmap empty_card;
     private HashMap<Integer, Integer> view_id_to_hand_index;
     private ArrayList<Integer> view_ids_selected;
 
@@ -161,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                             CARD_HEIGHT);
             id_to_bitmap[i + 1] = id_to_bitmap[i];
         }
+
+        empty_card = BitmapFactory.decodeResource(getResources(),R.drawable.empty_card);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -278,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         int left_margin = 0;
 
         for (int i = 0; i < playerCardData.capture_pile.size(); i++) {
-            int card_id = playerCardData.hand_card_pile.get(i);
+            int card_id = playerCardData.capture_pile.get(i);
             frameLayout = (FrameLayout) layoutInflater.inflate(R.layout.card_with_border, null);
             ((ImageButton) frameLayout.findViewById(R.id.card_image)).setImageBitmap(id_to_bitmap[card_id]);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
@@ -315,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                     id_to_bitmap[this.model.getTrump_card()]
             );
         } else {
-            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setBackgroundResource(0);;
+            ((ImageButton)(findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(empty_card);
         }
     }
 

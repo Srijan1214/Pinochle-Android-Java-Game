@@ -23,7 +23,8 @@ public class Player {
     public Player() {
         this.hand_card_pile = new ArrayList<Integer>();
         this.hand_meld_involvement_list = new ArrayList<ArrayList<ArrayList<Integer>>>();
-        this.current_meld_cards = new ArrayList<ArrayList<ArrayList<Integer>>>(12);
+        this.current_meld_cards = new ArrayList<ArrayList<ArrayList<Integer>>>();
+        while (this.current_meld_cards.size() < 12) this.current_meld_cards.add(new ArrayList<>());
         this.capture_pile = new ArrayList<Integer>();
 
         which_card_used_for_meld = new boolean[9][Constants.TOTAL_NO_OF_CARDS];
@@ -69,26 +70,26 @@ public class Player {
         return "";
     }
 
-    public void load_members_from_serialization_string(ArrayList<String> serialization_str_list, boolean[] cards_that_have_been_used){
+    public void load_members_from_serialization_string(ArrayList<String> serialization_str_list, boolean[] cards_that_have_been_used) {
 
     }
 
-    public void load_capture_cards_from_string(String capture_string, boolean[] cards_that_have_been_used){
+    public void load_capture_cards_from_string(String capture_string, boolean[] cards_that_have_been_used) {
 
     }
 
-    public void load_hand_cards_from_string(String hand_string, boolean[] cards_that_have_been_used){
+    public void load_hand_cards_from_string(String hand_string, boolean[] cards_that_have_been_used) {
 
     }
 
-    public void load_meld_cards_from_string(String meld_string, boolean[] cards_that_have_been_used){
+    public void load_meld_cards_from_string(String meld_string, boolean[] cards_that_have_been_used) {
 
     }
 
     public void remove_card_from_pile(int card_index) {
         for (ArrayList<Integer> removal_index_to_meld_pointer_triplet : this.hand_meld_involvement_list.get(card_index)) {
             ArrayList<Integer> cards_to_remove_from_meld =
-                    this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).get(removal_index_to_meld_pointer_triplet.get(0));
+                    this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).get(removal_index_to_meld_pointer_triplet.get(1));
             for (int index_to_remove_from_meld : cards_to_remove_from_meld) {
                 for (int i = 0; i < this.hand_meld_involvement_list.get(index_to_remove_from_meld).size(); i++) {
                     ArrayList<Integer> search_triplet = this.hand_meld_involvement_list.get(index_to_remove_from_meld).get(i);
@@ -103,6 +104,14 @@ public class Player {
                     }
                 }
             }
+            int back_index = this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).size() - 1;
+            this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).set(
+                    removal_index_to_meld_pointer_triplet.get(1),
+                    this.current_meld_cards.get(
+                            removal_index_to_meld_pointer_triplet.get(0)).get(back_index)
+            );
+            int temp_index = this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).size() - 1;
+            this.current_meld_cards.get(removal_index_to_meld_pointer_triplet.get(0)).remove(temp_index);
         }
 
         if (card_index != this.hand_card_pile.size() - 1) {
@@ -354,7 +363,7 @@ public class Player {
             int cur_card_id = this.hand_card_pile.get(i);
             int cur_card_weight = this.get_card_weight(cur_card_id);
             if (Card.is_first_card_greater_than_lead(cur_card_id, card_id, this.trump_card)) {
-                if(cur_card_weight < min_greatest_card_weight) {
+                if (cur_card_weight < min_greatest_card_weight) {
                     min_card_index = i;
                     min_greatest_card_weight = cur_card_weight;
                 }
