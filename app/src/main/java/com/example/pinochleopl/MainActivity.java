@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     LayoutInflater layoutInflater;
     FrameLayout frameLayout;
     FrameLayout frameLayout2;
-    boolean bordered = false;
 
     RelativeLayout stock_cards_layout;
     RelativeLayout human_hand_cards_layout;
@@ -305,25 +304,12 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bordered) {
-                    v.findViewById(R.id.black_highlight).setVisibility(View.INVISIBLE);
-                    try {
-                        rl.removeView(v);
-                        RelativeLayout.LayoutParams layoutParams2 = new RelativeLayout.LayoutParams(card_width, card_height);
-                        layoutParams2.setMargins(2000, 0, 0, 0);
-                        v.setLayoutParams(layoutParams2);
-                        hand_cards.addView(v);
-                    } catch (Exception e) {
-                    }
-                } else {
-                    v.findViewById(R.id.black_highlight).setVisibility(View.VISIBLE);
-                    try {
-                        hand_cards.removeView(v);
-                        rl.addView(v);
-                    } catch (Exception e) {
-                    }
+                v.findViewById(R.id.black_highlight).setVisibility(View.VISIBLE);
+                try {
+                    hand_cards.removeView(v);
+                    rl.addView(v);
+                } catch (Exception e) {
                 }
-                bordered = !bordered;
                 v.bringToFront();
                 System.out.println("Clicked!!!");
                 System.out.println(v.getId());

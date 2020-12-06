@@ -1,5 +1,6 @@
 package com.example.pinochleopl;
 
+import android.gesture.GestureUtils;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -68,6 +69,21 @@ public class Player {
         return "";
     }
 
+    public void load_members_from_serialization_string(ArrayList<String> serialization_str_list, boolean[] cards_that_have_been_used){
+
+    }
+
+    public void load_capture_cards_from_string(String capture_string, boolean[] cards_that_have_been_used){
+
+    }
+
+    public void load_hand_cards_from_string(String hand_string, boolean[] cards_that_have_been_used){
+
+    }
+
+    public void load_meld_cards_from_string(String meld_string, boolean[] cards_that_have_been_used){
+
+    }
 
     public void remove_card_from_pile(int card_index) {
         for (ArrayList<Integer> removal_index_to_meld_pointer_triplet : this.hand_meld_involvement_list.get(card_index)) {
@@ -243,15 +259,6 @@ public class Player {
         }
     }
 
-    private void update_meld_history(ArrayList<Integer> card_ids, int meld_number_9) {
-        for (int card_id : card_ids) {
-            this.which_card_used_for_meld[meld_number_9][card_id] = true;
-            if (meld_number_9 == Melds.FLUSH) {
-                this.which_card_used_for_meld[Melds.ROYAL_MARRIAGE][card_id] = true;
-            }
-        }
-    }
-
     private Pair<Integer, Integer> find_index_meld_pair_of_card_to_throw() {
         int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
 
@@ -267,6 +274,241 @@ public class Player {
         return ret_pair;
     }
 
+    private Pair<ArrayList<Integer>, Integer> get_card_ids_and_meld_number_12_best_meld() {
+        int[][] meld_logic_vector = this.get_meld_logic_vector();
+
+        this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
+
+        this.update_logic_vector_with_history(meld_logic_vector);
+
+        class Lambda_Function {
+            public boolean are_next_n_elements_0(int[] the_list, int start, int n) {
+                for (int i = 0; i < n; i++) {
+                    if (the_list[start + i] != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        Lambda_Function lambda_function = new Lambda_Function();
+
+        int max_meld_score = -111111;
+        int meld_number_played = Melds.INVALID;
+
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j += Constants.NO_OF_SAME_CARDS) {
+                if (lambda_function.are_next_n_elements_0(meld_logic_vector[i], j, Constants.NO_OF_SAME_CARDS)) {
+                    break;
+                }
+                if (j == (Constants.TOTAL_NO_OF_CARDS - Constants.NO_OF_SAME_CARDS)) {
+                    int cur_meld_score = Melds.get_meld_score(this.to_9(i));
+                    if (cur_meld_score > max_meld_score) {
+                        max_meld_score = cur_meld_score;
+                        meld_number_played = i;
+                    }
+                }
+            }
+        }
+        if (meld_number_played == Melds.INVALID) {
+            return (new Pair<ArrayList<Integer>, Integer>(new ArrayList<Integer>(), Melds.INVALID));
+        } else {
+            ArrayList<Integer> ret_list = new ArrayList<>();
+            int j = 0;
+            while (j < Constants.TOTAL_NO_OF_CARDS) {
+                int ele = meld_logic_vector[meld_number_played][j];
+                if (ele > 0) {
+                    ret_list.add(j);
+                    while ((j % Constants.NO_OF_SAME_CARDS) != ((-1 % Constants.NO_OF_SAME_CARDS) + Constants.NO_OF_SAME_CARDS)) {
+                        j += 1;
+                    }
+                }
+                j += 1;
+            }
+            return (new Pair<ArrayList<Integer>, Integer>(ret_list, meld_number_played));
+        }
+    }
+
+    private boolean is_meld_allowed_by_history(ArrayList<Integer> card_ids, int meld_9) {
+        for (int card_id : card_ids) {
+            if (this.which_card_used_for_meld[meld_9][card_id] == true) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void update_meld_history(ArrayList<Integer> card_ids, int meld_number_9) {
+        for (int card_id : card_ids) {
+            this.which_card_used_for_meld[meld_number_9][card_id] = true;
+            if (meld_number_9 == Melds.FLUSH) {
+                this.which_card_used_for_meld[Melds.ROYAL_MARRIAGE][card_id] = true;
+            }
+        }
+    }
+
+    private int find_index_of_smallest_card_greater_than(int card_id) {
+        int min_card_index = -1;
+        int min_greatest_card_weight = 9999999;
+        for (int i = 0; i < this.hand_card_pile.size(); i++) {
+            int cur_card_id = this.hand_card_pile.get(i);
+            int cur_card_weight = this.get_card_weight(cur_card_id);
+            if (Card.is_first_card_greater_than_lead(cur_card_id, card_id, this.trump_card)) {
+                if(cur_card_weight < min_greatest_card_weight) {
+                    min_card_index = i;
+                    min_greatest_card_weight = cur_card_weight;
+                }
+            }
+        }
+        return min_card_index;
+    }
+
+    private int find_index_of_smallest_card() {
+        int min_card_weight = 999999;
+        int min_card_index = -1;
+
+        for (int i = 0; i < this.hand_card_pile.size(); i++) {
+            int cur_card_id = this.hand_card_pile.get(i);
+            int cur_card_weight = this.get_card_weight(cur_card_id);
+            if (cur_card_weight < min_card_weight) {
+                min_card_index = i;
+                min_card_weight = cur_card_weight;
+            }
+        }
+
+        return min_card_index;
+    }
+
+    private int find_index_of_greatest_card() {
+        int max_card_weight = -11111;
+        int max_card_index = -1;
+
+        for (int i = 0; i < this.hand_card_pile.size(); i++) {
+            int cur_card_id = this.hand_card_pile.get(i);
+            int cur_card_weight = this.get_card_weight(cur_card_id);
+            if (cur_card_weight > max_card_weight) {
+                max_card_index = i;
+                max_card_weight = cur_card_weight;
+            }
+        }
+
+        return max_card_index;
+    }
+
+    private int to_9(int meld_12) {
+        if (meld_12 < 2) {
+            return meld_12;
+        } else if (meld_12 >= 2 && meld_12 <= 5) {
+            return 2;
+        } else {
+            return (meld_12 - 3);
+        }
+    }
+
+    private int search_card_in_pile(int card_id) {
+        return this.hand_card_pile.indexOf(card_id);
+    }
+
+    private int get_card_weight(int card_id) {
+        final int FACE_WEIGHT = Card.get_face_weight_from_id(card_id);
+        final int TRUMP_SUIT = Card.get_suit_from_id(this.trump_card);
+
+        if (Card.get_suit_from_id(card_id) == TRUMP_SUIT) {
+            return FACE_WEIGHT + 100;
+        }
+        return FACE_WEIGHT;
+    }
+
+    private int[][] get_meld_logic_vector() {
+        final int TRUMP_SUIT = Card.get_suit_from_id(this.trump_card);
+        Integer[] FLUSH_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.TEN_FACE, TRUMP_SUIT),
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, TRUMP_SUIT),
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, TRUMP_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, TRUMP_SUIT),
+                Card.get_id_from_face_and_suit(Card.ACE_FACE, TRUMP_SUIT),
+        };
+        Integer[] ROYAL_MARRIAGE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, TRUMP_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, TRUMP_SUIT),
+        };
+        Integer[] SPADES_MARRIAGE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.SPADES_SUIT),
+        };
+        Integer[] CLUBS_MARRIAGE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.CLUBS_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.CLUBS_SUIT),
+        };
+        Integer[] HEARTS_MARRIAGE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.HEARTS_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.HEARTS_SUIT),
+        };
+        Integer[] DIAMONDS_MARRIAGE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.DIAMONDS_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[] DIX_REQUIREMENTS = {Card.get_id_from_face_and_suit(Card.NINE_FACE, TRUMP_SUIT)};
+        Integer[] FOUR_ACES_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.ACE_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.ACE_FACE, Card.CLUBS_SUIT),
+                Card.get_id_from_face_and_suit(Card.ACE_FACE, Card.HEARTS_SUIT),
+                Card.get_id_from_face_and_suit(Card.ACE_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[] FOUR_KINGS_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.CLUBS_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.HEARTS_SUIT),
+                Card.get_id_from_face_and_suit(Card.KING_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[] FOUR_QUEENS_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.CLUBS_SUIT),
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.HEARTS_SUIT),
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[] FOUR_JACKS_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, Card.CLUBS_SUIT),
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, Card.HEARTS_SUIT),
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[] PINOCHLE_REQUIREMENTS = {
+                Card.get_id_from_face_and_suit(Card.QUEEN_FACE, Card.SPADES_SUIT),
+                Card.get_id_from_face_and_suit(Card.JACK_FACE, Card.DIAMONDS_SUIT),
+        };
+        Integer[][] ALL_REQUIREMENTS = {FLUSH_REQUIREMENTS, ROYAL_MARRIAGE_REQUIREMENTS,
+                SPADES_MARRIAGE_REQUIREMENTS,
+                CLUBS_MARRIAGE_REQUIREMENTS,
+                HEARTS_MARRIAGE_REQUIREMENTS,
+                DIAMONDS_MARRIAGE_REQUIREMENTS, DIX_REQUIREMENTS,
+                FOUR_ACES_REQUIREMENTS, FOUR_JACKS_REQUIREMENTS,
+                FOUR_KINGS_REQUIREMENTS, FOUR_QUEENS_REQUIREMENTS,
+                PINOCHLE_REQUIREMENTS};
+
+        int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j++) {
+                meld_logic_vector[i][j] = -1;
+            }
+        }
+        for (int i = 0; i < ALL_REQUIREMENTS.length; i++) {
+            if (i == (2 + TRUMP_SUIT)) {
+                int[] temp_arr = new int[Constants.TOTAL_NO_OF_CARDS];
+                Arrays.fill(temp_arr, 0);
+                meld_logic_vector[i] = temp_arr;
+                continue;
+            }
+            for (int j : ALL_REQUIREMENTS[i]) {
+                for (int player_addition = 0; player_addition < Constants.NO_OF_SAME_CARDS; player_addition++) {
+                    meld_logic_vector[i][j + player_addition] = 0;
+                }
+            }
+        }
+
+        return meld_logic_vector;
+    }
+
     private void add_to_meld_logic_vector(int[][] meld_logic_vector, ArrayList<Integer> card_pile) {
         for (int i = 0; i < 12; i++) {
             for (int card_id : card_pile) {
@@ -279,45 +521,16 @@ public class Player {
         }
     }
 
-    private Pair<Integer, Integer> get_best_meldCardIndexPair_from_Logic(int[][] meld_logic_vector) {
-        int max_meld_score = -1111111;
-        int best_meld_number = Melds.INVALID;
-        int best_meld_index = -1;
-        int best_card_weight = -1;
-
-        for (int index = 0; index < this.hand_card_pile.size(); index++) {
-            int card_id = this.hand_card_pile.get(index);
-            int meld_number_played = this.get_best_meld_card_if_thrown(meld_logic_vector, card_id);
-
-            if (meld_number_played != -1) {
-                int cur_score = Melds.get_meld_score(meld_number_played);
-                if (cur_score > max_meld_score) {
-                    max_meld_score = cur_score;
-                    best_meld_number = meld_number_played;
-                    best_meld_index = index;
-                    best_card_weight = this.get_card_weight(card_id);
-                } else if (cur_score == max_meld_score) {
-                    int cur_card_weight = this.get_card_weight(card_id);
-                    if(cur_card_weight > best_card_weight) {
-                        max_meld_score = cur_score;
-                        best_meld_number = meld_number_played;
-                        best_meld_index = index;
-                        best_card_weight = cur_card_weight;
+    private void update_logic_vector_with_history(int[][] meld_logic_vector) {
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j++) {
+                if (this.which_card_used_for_meld[to_9(i)][j] == true) {
+                    if (meld_logic_vector[i][j] >= 0) {
+                        meld_logic_vector[i][j] = 0;
                     }
                 }
             }
         }
-        return new Pair<Integer, Integer>(best_meld_index, best_meld_number);
-    }
-
-    private int get_card_weight(int card_id) {
-        final int FACE_WEIGHT = Card.get_face_weight_from_id(card_id);
-        final int TRUMP_SUIT = Card.get_suit_from_id(this.trump_card);
-
-        if (Card.get_suit_from_id(card_id) == TRUMP_SUIT) {
-            return FACE_WEIGHT + 100;
-        }
-        return FACE_WEIGHT;
     }
 
     private int get_best_meld_card_if_thrown(int[][] meld_logic_vector, int card_id) {
@@ -349,7 +562,7 @@ public class Player {
         int max_meld_score = -111111;
         int meld_number_played = Melds.INVALID;
         for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j++) {
+            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j += Constants.NO_OF_SAME_CARDS) {
                 if (lambda_function.are_next_n_elements_0(
                         temp_logic_vector[i], j, Constants.NO_OF_SAME_CARDS)) {
                     break;
@@ -367,25 +580,34 @@ public class Player {
         return meld_number_played;
     }
 
-    private void update_logic_vector_with_history(int[][] meld_logic_vector) {
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j++) {
-                if (this.which_card_used_for_meld[to_9(i)][j] == true) {
-                    if (meld_logic_vector[i][j] >= 0) {
-                        meld_logic_vector[i][j] = 0;
+    private Pair<Integer, Integer> get_best_meldCardIndexPair_from_Logic(int[][] meld_logic_vector) {
+        int max_meld_score = -1111111;
+        int best_meld_number = Melds.INVALID;
+        int best_meld_index = -1;
+        int best_card_weight = -1;
+
+        for (int index = 0; index < this.hand_card_pile.size(); index++) {
+            int card_id = this.hand_card_pile.get(index);
+            int meld_number_played = this.get_best_meld_card_if_thrown(meld_logic_vector, card_id);
+
+            if (meld_number_played != -1) {
+                int cur_score = Melds.get_meld_score(meld_number_played);
+                if (cur_score > max_meld_score) {
+                    max_meld_score = cur_score;
+                    best_meld_number = meld_number_played;
+                    best_meld_index = index;
+                    best_card_weight = this.get_card_weight(card_id);
+                } else if (cur_score == max_meld_score) {
+                    int cur_card_weight = this.get_card_weight(card_id);
+                    if (cur_card_weight > best_card_weight) {
+                        max_meld_score = cur_score;
+                        best_meld_number = meld_number_played;
+                        best_meld_index = index;
+                        best_card_weight = cur_card_weight;
                     }
                 }
             }
         }
-    }
-
-    private int to_9(int meld_12) {
-        if (meld_12 < 2) {
-            return meld_12;
-        } else if (meld_12 >= 2 && meld_12 <= 5) {
-            return 2;
-        } else {
-            return (meld_12 - 3);
-        }
+        return new Pair<Integer, Integer>(best_meld_index, best_meld_number);
     }
 }
