@@ -6,6 +6,7 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 
 public class Player {
@@ -474,9 +475,7 @@ public class Player {
 
     protected Pair<Integer, Integer> find_index_meld_pair_of_card_to_throw() {
         int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
-
         this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
-
         this.update_logic_vector_with_history(meld_logic_vector);
 
         Pair<Integer, Integer> ret_pair = this.get_best_meldCardIndexPair_from_Logic(meld_logic_vector);
@@ -561,6 +560,39 @@ public class Player {
     }
 
     protected int find_index_of_smallest_card_greater_than(int card_id) {
+        // First find the smallest card the results in the worse meld and greater than chase card
+        int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
+        this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
+        this.update_logic_vector_with_history(meld_logic_vector);
+
+        ArrayList<int[]> data = new ArrayList<>();
+        for (int i = 0; i < this.hand_card_pile.size(); i++) {
+            int cur_card_id = this.hand_card_pile.get(i);
+            int cur_card_weight = this.get_card_weight(cur_card_id);
+            if (Card.is_first_card_greater_than_lead(cur_card_id, card_id, this.trump_card)) {
+                int meld_9 = this.get_best_meld_card_if_thrown(meld_logic_vector, cur_card_id);
+                if (meld_9 != Melds.INVALID) {
+                    data.add(new int[]{meld_9, cur_card_weight, i});
+                }
+            }
+        }
+        Collections.sort(data, new Comparator<int[]>() {
+            @Override
+            public int compare(final int[] entry1, final int[] entry2) {
+                final int ele1 = entry1[0];
+                final int ele2 = entry2[0];
+                if (ele2 == ele1) {
+                    return entry1[1] - entry2[1];
+                }
+                return ele1 - ele2;
+            }
+        });
+        if (!data.isEmpty()) {
+            return data.get(0)[2];
+        }
+
+
+        // If no meld is possible then just find smallest gard greater than lead
         int min_card_index = -1;
         int min_greatest_card_weight = 9999999;
         for (int i = 0; i < this.hand_card_pile.size(); i++) {

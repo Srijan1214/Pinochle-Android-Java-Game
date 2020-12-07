@@ -230,7 +230,10 @@ public class MainActivity extends AppCompatActivity {
         this.redraw_scores();
         this.redraw_round_number();
         this.draw_trump_card();
-        this.clear_help_message();
+
+        if(this.model.getModelState() != ModelState.PLAYED_INVALID_MELD) {
+            this.clear_help_message();
+        }
     }
 
     private void show_computer_threw_card_screen(String message) {

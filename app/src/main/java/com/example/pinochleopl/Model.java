@@ -204,6 +204,7 @@ public class Model {
             this.go_to_next_turn();
             return meld_number;
         }
+        this.modelState = ModelState.PLAYED_INVALID_MELD;
         return -1;
     }
 

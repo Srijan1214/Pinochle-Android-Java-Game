@@ -6,5 +6,6 @@ public enum ModelState {
     HUMAN_PLAYING_MELD,
     COMPUTER_PLAYED_MELD,
     ROUND_ENDED,
+    PLAYED_INVALID_MELD,
     GAME_ENDED
 }
