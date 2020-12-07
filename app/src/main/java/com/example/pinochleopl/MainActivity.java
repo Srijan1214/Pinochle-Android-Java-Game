@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         initialize_members();
         load_card_bitmaps();
 
-        if(should_load_from_file) {
+        if (should_load_from_file) {
             this.model.load_game_from_file(load_file_name, getApplicationContext());
             this.model.start_new_turn();
         } else {
@@ -229,9 +229,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.redraw_scores();
         this.redraw_round_number();
+        this.redraw_turn_thrown_cards();
         this.draw_trump_card();
 
-        if(this.model.getModelState() != ModelState.PLAYED_INVALID_MELD) {
+        if (this.model.getModelState() != ModelState.PLAYED_INVALID_MELD) {
             this.clear_help_message();
         }
     }
@@ -396,6 +397,33 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void redraw_turn_thrown_cards() {
+        ArrayList<Integer> turn_thrown_cards = this.model.getTurn_thrown_cards();
+
+        if (turn_thrown_cards.size() == 0) {
+            ((ImageButton) findViewById(R.id.card_thrown_1).findViewById(R.id.card_image)).setImageBitmap(
+                    this.empty_card
+            );
+            ((ImageButton) findViewById(R.id.card_thrown_2).findViewById(R.id.card_image)).setImageBitmap(
+                    this.empty_card
+            );
+        } else if (turn_thrown_cards.size() == 1) {
+            ((ImageButton) findViewById(R.id.card_thrown_1).findViewById(R.id.card_image)).setImageBitmap(
+                    this.id_to_bitmap[turn_thrown_cards.get(0)]
+            );
+            ((ImageButton) findViewById(R.id.card_thrown_2).findViewById(R.id.card_image)).setImageBitmap(
+                    this.empty_card
+            );
+        } else if (turn_thrown_cards.size() == 2) {
+            ((ImageButton) findViewById(R.id.card_thrown_1).findViewById(R.id.card_image)).setImageBitmap(
+                    this.id_to_bitmap[turn_thrown_cards.get(0)]
+            );
+            ((ImageButton) findViewById(R.id.card_thrown_2).findViewById(R.id.card_image)).setImageBitmap(
+                this.id_to_bitmap[turn_thrown_cards.get(1)]
+            );
+        }
+    }
+
     private void clear_help_message() {
         ((MaterialTextView) findViewById(R.id.text_help)).setText("");
     }
@@ -558,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
             message += " Game Draw";
         }
 
-        ((TextView)findViewById(R.id.text_game_end)).setText(message);
+        ((TextView) findViewById(R.id.text_game_end)).setText(message);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

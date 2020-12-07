@@ -29,6 +29,11 @@ public class Model {
     private int round_number;
     private int turn_number;
     private int turn_lead_card;
+
+    public ArrayList<Integer> getTurn_thrown_cards() {
+        return (ArrayList<Integer>) turn_thrown_cards.clone();
+    }
+
     private ArrayList<Integer> turn_thrown_cards;
 
     private int no_of_turns_played;

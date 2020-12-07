@@ -268,16 +268,18 @@
                 <include
                     android:id="@+id/card_thrown_1"
                     layout="@layout/card_with_border"
-                    android:layout_width="39dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="32dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="11dp"></include>
 
                 <include
                     android:id="@+id/card_thrown_2"
                     layout="@layout/card_with_border"
-                    android:layout_width="39dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="32dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="11dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/card_thrown_1"></include>
             </RelativeLayout>
 

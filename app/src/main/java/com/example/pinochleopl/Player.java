@@ -407,25 +407,25 @@ public class Player {
                         SECOND_FACE == Card.ACE_FACE &&
                         THIRD_FACE == Card.ACE_FACE &&
                         FOURTH_FACE == Card.ACE_FACE) {
-                    return Melds.FOUR_ACES;
+                    return Melds.FOUR_ACES + 3;
                 }
                 if (FIRST_FACE == Card.KING_FACE &&
                         SECOND_FACE == Card.KING_FACE &&
                         THIRD_FACE == Card.KING_FACE &&
                         FOURTH_FACE == Card.KING_FACE) {
-                    return Melds.FOUR_KINGS;
+                    return Melds.FOUR_KINGS + 3;
                 }
                 if (FIRST_FACE == Card.QUEEN_FACE &&
                         SECOND_FACE == Card.QUEEN_FACE &&
                         THIRD_FACE == Card.QUEEN_FACE &&
                         FOURTH_FACE == Card.QUEEN_FACE) {
-                    return Melds.FOUR_QUEENS;
+                    return Melds.FOUR_QUEENS + 3;
                 }
                 if (FIRST_FACE == Card.JACK_FACE &&
                         SECOND_FACE == Card.JACK_FACE &&
                         THIRD_FACE == Card.JACK_FACE &&
                         FOURTH_FACE == Card.JACK_FACE) {
-                    return Melds.FOUR_JACKS;
+                    return Melds.FOUR_JACKS + 3;
                 }
             }
         }
