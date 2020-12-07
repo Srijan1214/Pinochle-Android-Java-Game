@@ -20,7 +20,7 @@ public class Deck {
     }
 
     public int pop_card_from_deck() {
-        return this.stock.remove(this.stock.size() - 1).intValue();
+        return this.stock.remove(0).intValue();
     }
 
     public int get_stock_size() {
