@@ -59,31 +59,235 @@ public class Player {
     }
 
     public String get_hand_pile_string() {
-        return "";
+        String message = "";
+        for (int i = 0; i < this.hand_card_pile.size(); i++) {
+            int card_id = this.hand_card_pile.get(i);
+            if (this.hand_meld_involvement_list.get(i).size() == 0) {
+                message += Card.get_string_from_id(card_id);
+                if (i != this.hand_card_pile.size() - 1) {
+                    message += " ";
+                }
+            }
+        }
+        return message;
     }
 
     public String get_capture_pile_string() {
-        return "";
+        String message = "";
+        for (int i = 0; i < this.capture_pile.size(); i++) {
+            int card_id = this.capture_pile.get(i);
+            message += Card.get_string_from_id(card_id);
+            if (i != this.capture_pile.size() - 1) {
+                message += " ";
+            }
+        }
+        return message;
     }
 
     public String get_meld_string() {
-        return "";
+        String message = "";
+
+        for (int meld_num_12 = 0; meld_num_12 < this.current_meld_cards.size(); meld_num_12++) {
+            for (ArrayList<Integer> meld_card_indexes : this.current_meld_cards.get(meld_num_12)) {
+                for (int hand_index : meld_card_indexes) {
+                    int card_id = this.hand_card_pile.get(hand_index);
+                    message += Card.get_string_from_id(card_id);
+                    if (this.hand_meld_involvement_list.get(hand_index).size() > 1) {
+                        message += "*";
+                    }
+                    if (meld_num_12 == this.current_meld_cards.size()) {
+                        continue;
+                    }
+                    if (!(hand_index == meld_card_indexes.get(meld_card_indexes.size() - 1))) {
+                        message += " ";
+                    }
+                }
+                message += ", ";
+            }
+        }
+        if (message.length() > 0 && message.substring(message.length() - 1, message.length()).equals(" ")) {
+            message = message.substring(0, message.length() - 1);
+        }
+        if (message.length() > 0 && message.substring(message.length() - 1, message.length()).equals(",")) {
+            message = message.substring(0, message.length() - 1);
+        }
+        return message;
     }
 
     public void load_members_from_serialization_string(ArrayList<String> serialization_str_list, boolean[] cards_that_have_been_used) {
+        int start = serialization_str_list.get(0).indexOf(":") + 1;
+        int end = serialization_str_list.get(0).length();
+        String hand_cards_string = serialization_str_list.get(0).substring(start, end).trim();
 
+
+        start = serialization_str_list.get(1).indexOf(":") + 1;
+        end = serialization_str_list.get(1).length();
+        String capture_cards_string = serialization_str_list.get(1).substring(start, end).trim();
+
+        start = serialization_str_list.get(2).indexOf(":") + 1;
+        end = serialization_str_list.get(2).length();
+        String meld_cards_string = serialization_str_list.get(2).substring(start, end).trim();
+
+        this.hand_card_pile.clear();
+        this.hand_meld_involvement_list.clear();
+
+        this.load_hand_cards_from_string(hand_cards_string, cards_that_have_been_used);
+        this.load_capture_cards_from_string(capture_cards_string, cards_that_have_been_used);
+        this.load_meld_cards_from_string(meld_cards_string, cards_that_have_been_used);
     }
 
     public void load_capture_cards_from_string(String capture_string, boolean[] cards_that_have_been_used) {
-
+        if (capture_string.isEmpty()) {
+            return;
+        }
+        String[] cards = capture_string.split(" ");
+        for (String card_str : cards) {
+            int id = Card.get_id_from_string(card_str);
+            if (cards_that_have_been_used[id]) {
+                id += 1;
+            }
+            cards_that_have_been_used[id] = true;
+            this.capture_pile.add(id);
+        }
     }
 
     public void load_hand_cards_from_string(String hand_string, boolean[] cards_that_have_been_used) {
-
+        if (hand_string.isEmpty()) {
+            return;
+        }
+        String[] cards = hand_string.split(" ");
+        for (String card_str : cards) {
+            int id = Card.get_id_from_string(card_str);
+            if (cards_that_have_been_used[id]) {
+                id += 1;
+            }
+            cards_that_have_been_used[id] = true;
+            this.hand_card_pile.add(id);
+            this.hand_meld_involvement_list.add(new ArrayList<>());
+        }
     }
 
     public void load_meld_cards_from_string(String meld_string, boolean[] cards_that_have_been_used) {
+        if (meld_string.isEmpty()) {
+            return;
+        }
+        int[][] logic_vector = this.get_meld_logic_vector();
+        for (int i = 0; i < logic_vector[2 + Card.get_suit_from_id(this.trump_card)].length; i++) {
+            logic_vector[2 + Card.get_suit_from_id(this.trump_card)][i] = -1;
+        }
+        String[] temp_meld_card_strings = meld_string.split(", ");
+        String[][] meld_card_strings = new String[temp_meld_card_strings.length][];
+        ArrayList<Integer> meld_num_12_vec = new ArrayList<>();
 
+        for (int i = 0; i < meld_card_strings.length; i++) {
+            meld_card_strings[i] = temp_meld_card_strings[i].trim().split(" ");
+            ArrayList<Integer> temp = new ArrayList<>();
+            for (String ele : meld_card_strings[i]) {
+                temp.add(Card.get_id_from_string(ele));
+            }
+            meld_num_12_vec.add(this.get_meld_type_12_from_cards(temp));
+        }
+
+        class LambdaFunctions {
+            public int get_id_for_duplicate_cards(int id) {
+                if (id % 2 == 0) {
+                    return id + 1;
+                } else {
+                    return id - 1;
+                }
+            }
+        }
+        LambdaFunctions lambdaFunctions = new LambdaFunctions();
+
+        int[] id_to_change_cur_card_to = new int[48];
+        Arrays.fill(id_to_change_cur_card_to, -1);
+
+        ArrayList<ArrayList<Integer>> meld_card_ids = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < meld_card_strings.length; i++) {
+            meld_card_ids.add(new ArrayList<Integer>());
+            for (int j = 0; j < meld_card_strings[i].length; j++) {
+                meld_card_ids.get(i).add(Card.get_id_from_string(
+                        meld_card_strings[i][j]
+                ));
+            }
+        }
+
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            int cur_meld_12 = meld_num_12_vec.get(i);
+            for (int j = 0; j < meld_card_ids.get(i).size(); j++) {
+                int id = meld_card_ids.get(i).get(j);
+                if (id_to_change_cur_card_to[id] != -1) {
+                    id = id_to_change_cur_card_to[id];
+                }
+                if (id_to_change_cur_card_to[id] != -1) {
+                    id = id_to_change_cur_card_to[id];
+                }
+                if (logic_vector[cur_meld_12][id] != 0) {
+                    id = id_to_change_cur_card_to[id];
+                }
+                meld_card_ids.get(i).set(j, id);
+                if (meld_card_strings[i][j].length() == 2) {
+                    id = lambdaFunctions.get_id_for_duplicate_cards(id);
+                }
+                id_to_change_cur_card_to[Card.get_id_from_string(meld_card_strings[i][j])] = id;
+            }
+        }
+
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            for (int j = 0; j < meld_card_ids.get(i).size(); j++) {
+                if (cards_that_have_been_used[meld_card_ids.get(i).get(j)]) {
+                    meld_card_ids.get(i).set(j,
+                            lambdaFunctions.get_id_for_duplicate_cards(
+                                    meld_card_ids.get(i).get(j)));
+                }
+            }
+        }
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            for (int j = 0; j < meld_card_ids.get(i).size(); j++) {
+                cards_that_have_been_used[meld_card_ids.get(i).get(j)] = true;
+            }
+        }
+
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            int cur_meld_12 = meld_num_12_vec.get(i);
+            for (int id : meld_card_ids.get(i)) {
+                this.which_card_used_for_meld[this.to_9(cur_meld_12)][id] = true;
+            }
+        }
+
+        int[] id_to_index = new int[48];
+        Arrays.fill(id_to_index, -1);
+
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            for (int id : meld_card_ids.get(i)) {
+                if (id_to_index[id] == -1) {
+                    int index = this.hand_card_pile.size();
+                    this.hand_card_pile.add(id);
+                    this.hand_meld_involvement_list.add(new ArrayList<>());
+                    id_to_index[id] = index;
+                }
+            }
+        }
+
+
+        for (int i = 0; i < meld_card_ids.size(); i++) {
+            int meld_num_12 = meld_num_12_vec.get(i);
+            ArrayList<Integer> index_vector = new ArrayList<>();
+            for (int id : meld_card_ids.get(i)) {
+                index_vector.add(id_to_index[id]);
+            }
+            this.current_meld_cards.get(meld_num_12).add(index_vector);
+            for (int j = 0; j < index_vector.size(); j++) {
+                int position_in_melds = this.current_meld_cards.get(meld_num_12).size() - 1;
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(meld_num_12);
+                temp.add(position_in_melds);
+                temp.add(j);
+                this.hand_meld_involvement_list.get(index_vector.get(j)).add(
+                        temp
+                );
+            }
+        }
     }
 
     public void remove_card_from_pile(int card_index) {

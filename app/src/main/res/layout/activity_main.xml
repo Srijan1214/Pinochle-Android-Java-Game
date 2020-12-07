@@ -666,7 +666,7 @@
                     android:layout_height="60dp"
                     android:layout_marginLeft="25dp"
                     android:layout_toRightOf="@id/text_game_end"
-                    android:onClick="listener_btn_computer_throw_continue"
+                    android:onClick="listener_btn_quit_game_yes"
                     android:text="End Game"></Button>
             </RelativeLayout>
         </RelativeLayout>

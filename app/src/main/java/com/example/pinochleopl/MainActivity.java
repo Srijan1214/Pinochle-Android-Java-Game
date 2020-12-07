@@ -70,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         if(should_load_from_file) {
             this.model.load_game_from_file(load_file_name, getApplicationContext());
+            this.model.start_new_turn();
+        } else {
+            this.model.start_new_round(1);
         }
 
-        this.model.start_new_round(1);
         redraw_cards();
 //        deleteFile("asdasdasdasdasdq2233123123123");
     }
@@ -553,8 +555,7 @@ public class MainActivity extends AppCompatActivity {
             message += " Game Draw";
         }
 
-        this.finish();
-        System.exit(0);
+        ((TextView)findViewById(R.id.text_game_end)).setText(message);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

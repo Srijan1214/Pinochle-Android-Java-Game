@@ -27,8 +27,33 @@ public class Deck {
         return this.stock.size();
     }
 
+    public void load_stock_pile_from_string(String stock_str, boolean[] cards_that_have_already_been_used) {
+        this.stock.clear();
+        stock_str = stock_str.trim();
+        if(stock_str.isEmpty()){
+            return;
+        }
+        String[] cards = stock_str.split(" ");
+        for(String card_str: cards) {
+            int id = Card.get_id_from_string(card_str);
+            if(cards_that_have_already_been_used[id]) {
+                id+= 1;
+            }
+            cards_that_have_already_been_used[id] = true;
+            this.stock.add(id);
+        }
+    }
+
     public String get_stock_string(){
-        return "";
+        String message = "";
+        for (int i = 0; i < this.stock.size(); i++) {
+            int card_id = this.stock.get(i);
+            message += Card.get_string_from_id(card_id);
+            if(i != this.stock.size() - 1) {
+                message+= " ";
+            }
+        }
+        return message;
     }
     public ArrayList<Integer> get_stock_pile(){
         return (ArrayList<Integer>) this.stock.clone();
