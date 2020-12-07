@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             this.model.start_new_turn();
         } else {
             this.model.start_new_round(1);
+            this.show_coin_toss_frame();
         }
 
         redraw_cards();
@@ -467,6 +468,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button_skip_meld).setVisibility(View.INVISIBLE);
     }
 
+    private void show_coin_toss_frame() {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
+        findViewById(R.id.frame_coin_toss).setVisibility(View.VISIBLE);
+    }
+
     private void show_meld_button() {
         findViewById(R.id.button_play_meld).setVisibility(View.VISIBLE);
         findViewById(R.id.button_skip_meld).setVisibility(View.VISIBLE);
@@ -478,6 +484,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void show_throw_button() {
         findViewById(R.id.button_play_selected_cards).setVisibility(View.VISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_coin_toss_input(View v) {
+        findViewById(R.id.coin_toss_buttons).setVisibility(View.INVISIBLE);
+        findViewById(R.id.coin_toss_result).setVisibility(View.VISIBLE);
+
+        this.model.decide_lead_through_coin_toss();
+
+        if(this.model.getLead_player() == Constants.COMPUTER) {
+            ((TextView) findViewById(R.id.coin_toss_result_prompt)).setText("Computer Won Coin Toss");
+        } else {
+            ((TextView) findViewById(R.id.coin_toss_result_prompt)).setText("Human Won Coin Toss");
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void listener_coin_toss_continue(View v) {
+        findViewById(R.id.coin_toss_buttons).setVisibility(View.VISIBLE);
+        findViewById(R.id.coin_toss_result).setVisibility(View.INVISIBLE);
+        findViewById(R.id.frame_coin_toss).setVisibility(View.INVISIBLE);
+        findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
+
+
+        this.model.start_new_turn();
+        this.redraw_cards();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

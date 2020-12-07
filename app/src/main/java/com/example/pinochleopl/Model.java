@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Model {
     private int[] round_scores;
@@ -48,7 +49,7 @@ public class Model {
 
     public Model() {
         this.prev_cumulative_scores = new int[]{0, 0};
-        this.decide_lead_through_coin_toss();
+//        this.decide_lead_through_coin_toss();
     }
 
     public void start_new_round(int round_number) {
@@ -63,10 +64,10 @@ public class Model {
 
         this.deal_cards_from_deck_to_players();
 
+        this.turn_thrown_cards = new ArrayList<Integer>();
+
         this.round_scores = new int[]{0, 0};
 
-        this.decide_lead_through_coin_toss();
-        start_new_turn();
     }
 
     public void start_new_turn() {
@@ -171,8 +172,8 @@ public class Model {
         }
     }
 
-    private void decide_lead_through_coin_toss() {
-        this.lead_player = Constants.HUMAN;
+    public void decide_lead_through_coin_toss() {
+        this.lead_player = new Random().nextInt(2);
     }
 
     private void deal_cards_from_deck_to_players() {
@@ -458,5 +459,9 @@ public class Model {
 
     public int getTrump_card() {
         return trump_card;
+    }
+
+    public int getLead_player() {
+        return lead_player;
     }
 }
