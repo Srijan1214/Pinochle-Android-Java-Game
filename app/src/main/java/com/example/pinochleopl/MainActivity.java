@@ -242,14 +242,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_computer_move_message).setVisibility(View.VISIBLE);
 
-        ((TextView) findViewById(R.id.text_computer_move)).setText(message);
+        ((TextView) findViewById(R.id.text_computer_move)).setText("Computer played " + message);
     }
 
     private void show_computer_threw_meld_screen(String message) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_computer_meld_message).setVisibility(View.VISIBLE);
 
-        ((TextView) findViewById(R.id.text_computer_meld)).setText(message);
+        ((TextView) findViewById(R.id.text_computer_meld)).setText("Computer played " + message);
     }
 
     private void show_round_end_screen() {
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
                     this.id_to_bitmap[turn_thrown_cards.get(0)]
             );
             ((ImageButton) findViewById(R.id.card_thrown_2).findViewById(R.id.card_image)).setImageBitmap(
-                this.id_to_bitmap[turn_thrown_cards.get(1)]
+                    this.id_to_bitmap[turn_thrown_cards.get(1)]
             );
         }
     }
@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.model.decide_lead_through_coin_toss();
 
-        if(this.model.getLead_player() == Constants.COMPUTER) {
+        if (this.model.getLead_player() == Constants.COMPUTER) {
             ((TextView) findViewById(R.id.coin_toss_result_prompt)).setText("Computer Won Coin Toss");
         } else {
             ((TextView) findViewById(R.id.coin_toss_result_prompt)).setText("Human Won Coin Toss");
