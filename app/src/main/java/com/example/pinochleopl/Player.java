@@ -474,7 +474,7 @@ public class Player {
     }
 
     protected Pair<Integer, Integer> find_index_meld_pair_of_card_to_throw() {
-        int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
+        int[][] meld_logic_vector = this.get_meld_logic_vector();
         this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
         this.update_logic_vector_with_history(meld_logic_vector);
 
@@ -561,7 +561,7 @@ public class Player {
 
     protected int find_index_of_smallest_card_greater_than(int card_id) {
         // First find the smallest card the results in the worse meld and greater than chase card
-        int[][] meld_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
+        int[][] meld_logic_vector = this.get_meld_logic_vector();
         this.add_to_meld_logic_vector(meld_logic_vector, this.hand_card_pile);
         this.update_logic_vector_with_history(meld_logic_vector);
 
@@ -779,7 +779,13 @@ public class Player {
     }
 
     private int get_best_meld_card_if_thrown(int[][] meld_logic_vector, int card_id) {
-        int[][] temp_logic_vector = new int[12][Constants.TOTAL_NO_OF_CARDS];
+        int[][] temp_logic_vector = new int[meld_logic_vector.length][];
+        for (int i = 0; i < meld_logic_vector.length; i++) {
+            for (int j = 0; j < meld_logic_vector[i].length; j++) {
+                temp_logic_vector[i] = meld_logic_vector[i].clone();
+            }
+        }
+
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < Constants.TOTAL_NO_OF_CARDS; j++) {
                 if (this.which_card_used_for_meld[this.to_9(i)][card_id] == false) {

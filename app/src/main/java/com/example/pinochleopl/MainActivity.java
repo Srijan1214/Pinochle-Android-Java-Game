@@ -382,11 +382,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void redraw_scores() {
         this.text_human_scores.setText(
-                "Human Scores: " + this.model.getRound_scores()[0] + " / " + this.model.getPrev_cumulative_scores()[0]
+                "Human Scores: " + this.model.getPrev_cumulative_scores()[0] + " / " + this.model.getRound_scores()[0]
         );
 
         this.text_computer_scores.setText(
-                "Computer Scores: " + this.model.getRound_scores()[1] + " / " + this.model.getPrev_cumulative_scores()[1]
+                "Computer Scores: " + this.model.getPrev_cumulative_scores()[1] + " / " + this.model.getRound_scores()[1]
         );
     }
 
