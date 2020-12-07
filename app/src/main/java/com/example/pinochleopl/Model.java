@@ -63,6 +63,7 @@ public class Model {
         this.players = new Player[]{player_1, player_2};
 
         this.deal_cards_from_deck_to_players();
+        this.modelState = ModelState.HUMAN_THROWING_CARD;
 
         this.turn_thrown_cards = new ArrayList<Integer>();
 
