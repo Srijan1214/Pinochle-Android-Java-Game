@@ -233,7 +233,13 @@ public class MainActivity extends AppCompatActivity {
         this.redraw_turn_thrown_cards();
         this.draw_trump_card();
 
-        if (this.model.getModelState() != ModelState.PLAYED_INVALID_MELD) {
+        if (this.model.getModelState() == ModelState.HUMAN_PLAYING_MELD) {
+            this.set_help_message("You won turn. You can meld");
+        } else if (this.model.getModelState() == ModelState.PLAYED_INVALID_MELD) {
+            this.set_help_message("Invalid Meld");
+        } else if (this.model.getModelState() == ModelState.HUMAN_THROWING_CARD) {
+            this.set_help_message("You turn to throw card");
+        } else {
             this.clear_help_message();
         }
     }
@@ -427,6 +433,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void clear_help_message() {
         ((MaterialTextView) findViewById(R.id.text_help)).setText("");
+    }
+
+
+    private void set_help_message(String s) {
+        ((MaterialTextView) findViewById(R.id.text_help)).setText(s);
     }
 
     private View.OnClickListener listener_card_click() {

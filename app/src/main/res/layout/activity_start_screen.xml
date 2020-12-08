@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".StartScreenActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/spinner_files_available"
+        android:layout_alignTop="@+id/spinner_files_available"
+        android:layout_marginRight="40dp"
+        android:text="Select Load File\nFrom Drop Down"></TextView>
+
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start New Game"
+        android:background="@color/green"
         android:layout_below="@+id/button_load_game"
         android:layout_marginTop="30dp"
         android:onClick="listener_btn_start_new_game"

@@ -23,8 +23,8 @@ public class Computer extends Player {
                 message += (Card.get_string_from_id(card_id) + " ");
             }
             message += ("as a " +
-                    Melds.get_meld_name(recommended_meld_number_9) + "to_earn " +
-                    Melds.get_meld_score(recommended_meld_number_9) + "points");
+                    Melds.get_meld_name(recommended_meld_number_9) + " to earn " +
+                    Melds.get_meld_score(recommended_meld_number_9) + " points");
 
             for (int i = 0; i < meld_card_indexes.size(); i++) {
                 int card_index = meld_card_indexes.get(i);
@@ -67,11 +67,11 @@ public class Computer extends Player {
                 index = this.find_index_of_smallest_card();
                 int id = this.hand_card_pile.get(index);
                 message += (Card.get_string_from_id(id) + " ");
-                message += "which is the smallest card, \\nbecause it had no possibility of winning.";
+                message += "which is the smallest card, \nbecause it had no possibility of winning.";
             } else {
                 int id = this.hand_card_pile.get(index);
                 message += (Card.get_string_from_id(id) + " ");
-                message += "which is the smallest card greater\\n than the lead card";
+                message += "which is the smallest card greater\n than the lead card";
             }
         }
         int ret_card_id = this.hand_card_pile.get(index);

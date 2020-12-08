@@ -571,8 +571,10 @@ public class Player {
             int cur_card_weight = this.get_card_weight(cur_card_id);
             if (Card.is_first_card_greater_than_lead(cur_card_id, card_id, this.trump_card)) {
                 int meld_9 = this.get_best_meld_card_if_thrown(meld_logic_vector, cur_card_id);
-                if (meld_9 != Melds.INVALID) {
-                    data.add(new int[]{meld_9, cur_card_weight, i});
+                if (meld_9 == Melds.INVALID) {
+                    data.add(new int[]{-1, cur_card_weight, i});
+                } else {
+                    data.add(new int[]{Melds.get_meld_score(meld_9), cur_card_weight, i});
                 }
             }
         }
@@ -584,28 +586,14 @@ public class Player {
                 if (ele2 == ele1) {
                     return entry1[1] - entry2[1];
                 }
-                return ele1 - ele2;
+                return ele2 - ele1;
             }
         });
         if (!data.isEmpty()) {
             return data.get(0)[2];
+        } else {
+            return -1;
         }
-
-
-        // If no meld is possible then just find smallest gard greater than lead
-        int min_card_index = -1;
-        int min_greatest_card_weight = 9999999;
-        for (int i = 0; i < this.hand_card_pile.size(); i++) {
-            int cur_card_id = this.hand_card_pile.get(i);
-            int cur_card_weight = this.get_card_weight(cur_card_id);
-            if (Card.is_first_card_greater_than_lead(cur_card_id, card_id, this.trump_card)) {
-                if (cur_card_weight < min_greatest_card_weight) {
-                    min_card_index = i;
-                    min_greatest_card_weight = cur_card_weight;
-                }
-            }
-        }
-        return min_card_index;
     }
 
     protected int find_index_of_smallest_card() {

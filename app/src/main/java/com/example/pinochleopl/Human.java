@@ -54,11 +54,11 @@ public class Human extends Player {
                 index = this.find_index_of_smallest_card();
                 int id = this.hand_card_pile.get(index);
                 message += (Card.get_string_from_id(id) + " ");
-                message += "which is the smallest card, \\nbecause you cannot win.";
+                message += "which is the smallest card, \nbecause you cannot win.";
             } else {
                 int id = this.hand_card_pile.get(index);
                 message += (Card.get_string_from_id(id) + " ");
-                message += "which is the smallest card greater\\n than the lead card";
+                message += "which is the smallest card greater\n than the lead card";
             }
         }
         ArrayList<Integer> ret_list = new ArrayList<Integer>();
