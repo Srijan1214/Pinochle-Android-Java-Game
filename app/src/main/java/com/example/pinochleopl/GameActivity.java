@@ -24,11 +24,9 @@ import com.google.android.material.textview.MaterialTextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     LayoutInflater layoutInflater;
     FrameLayout frameLayout;
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
         Intent intent = getIntent();
         boolean should_load_from_file = intent.getBooleanExtra(StartScreenActivity.INTENT_SHOULD_LOAD_FROM_FILE, false);
         String load_file_name = intent.getStringExtra(StartScreenActivity.INTENT_FILE_NAME);

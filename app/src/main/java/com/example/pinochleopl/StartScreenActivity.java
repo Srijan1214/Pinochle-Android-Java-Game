@@ -42,7 +42,7 @@ public class StartScreenActivity extends AppCompatActivity {
 
     public void listener_btn_load_game(View v) {
         String file_name = spinner_file_names.getSelectedItem().toString();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(INTENT_SHOULD_LOAD_FROM_FILE, true);
         intent.putExtra(INTENT_FILE_NAME, file_name);
 
@@ -50,7 +50,7 @@ public class StartScreenActivity extends AppCompatActivity {
     }
 
     public void listener_btn_start_new_game(View v) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(INTENT_SHOULD_LOAD_FROM_FILE, false);
 
         startActivity(intent);
