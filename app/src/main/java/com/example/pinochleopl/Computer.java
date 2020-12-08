@@ -15,6 +15,22 @@ import java.util.ArrayList;
 
 public class Computer extends Player {
 
+    /* *********************************************************************
+    Function Name: play_best_meld 
+    Purpose: To perform the best meld available and
+				return the help message and the recommended meld card indexes to meld.
+    Parameters:
+    			None
+    Return Value: A pair object of String, and ArrayList<Integer>. The first is the help message and 
+					the second is the list of card indexes played for the meld.
+    Local Variables:
+				None
+	Algorithm:
+            1) Get best card from find_index_meld_pair_of_card_to_throw if the computer is lead. Hence, find 
+			the best meld possible and play the card that results in that best meld.
+            2) If computer is lead, then play the biggest card.
+    Assistance Received: none
+    ********************************************************************* */
     public Pair<String, Integer> play_best_meld() {
         Pair<ArrayList<Integer>, Integer> recommended_meld = this.get_card_ids_and_meld_number_12_best_meld();
         ArrayList<Integer> meld_card_ids = (ArrayList<Integer>) recommended_meld.first.clone();
@@ -52,6 +68,19 @@ public class Computer extends Player {
         return new Pair<String, Integer>(message, recommended_meld_number_9);
     }
 
+    /* *********************************************************************
+    Function Name: throw_most_suitable_card 
+    Purpose: To throw the most suitable card for the turn. 
+				It returns the help message and the meld card index to throw.
+    Parameters:
+    			card_id, an integer, that tells the card if of the lead card. It is -1 if we are the lead
+				player.
+    Return Value: A pair object of String, and ArrayList<Integer>. The first is the help message and 
+					the second is a list of size 1 that tells the card index thrown.
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public Pair<String, Integer> throw_most_suitable_card(int card_id) {
         int index = -1;
         String message = "";
