@@ -9,6 +9,8 @@
 
 package com.example.pinochleopl;
 
+// These are the states the model is going to be in.
+// These states tell the controller, what should be seen in the view
 public enum ModelState {
     HUMAN_THROWING_CARD,
     COMPUTER_THREW_CARD,
