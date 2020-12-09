@@ -37,9 +37,11 @@ import java.util.HashMap;
 
 public class GameActivity extends AppCompatActivity {
 
+	// LayoutInflater object used to get the layout view objects from the "activity_game" xml file
     LayoutInflater layoutInflater;
     FrameLayout frameLayout;
 
+	// The holder layouts that store the respective type of cards in them
     RelativeLayout stock_cards_layout;
     RelativeLayout human_hand_cards_layout;
     RelativeLayout human_meld_cards_layout;
@@ -48,21 +50,45 @@ public class GameActivity extends AppCompatActivity {
     RelativeLayout computer_meld_cards_layout;
     RelativeLayout computer_capture_cards_layout;
 
+	// The MaterialTextView object that hold the scores and the round number
     MaterialTextView text_human_scores;
     MaterialTextView text_computer_scores;
     MaterialTextView text_round_number;
 
+	// The game model that has all the logic needed for the game
     Model model;
 
+	// The height and width of the cards in pixels
     int CARD_HEIGHT;
     int CARD_WIDTH;
 
+	// A map that maps each card to the respective bitmap objects
     private Bitmap[] id_to_bitmap;
+
+	// A Bitmap object containing a grey screen
     private Bitmap empty_card;
+
+	// A map from the view id of the cards to the index of in the hand_pile of the human cards
     private HashMap<Integer, Integer> view_id_to_hand_index;
+
+	// A map that maps each card to the respective view ids
     private int[] id_to_view_id;
+
+	// A list that stores the view ids of all the cards that are currently selected by the user
     private ArrayList<Integer> view_ids_selected;
 
+    /* *********************************************************************
+    Function Name: onCreate 
+    Purpose: The life-cycle method called when the activity is finished initializing. It starts the game and 
+				tells the model to either load the game from a file or start a new game
+    Parameters:
+				Bundle savedInstanceState, a Bundle object, used by the  classes higher up in the hierarchy.
+    Return Value: None
+    Local Variables:
+    			should_load_from_file, a boolean, that tells if the game should be a new game or should load
+					from file
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +113,16 @@ public class GameActivity extends AppCompatActivity {
 //        deleteFile("asdasdasdasdasdq2233123123123");
     }
 
+    /* *********************************************************************
+    Function Name: initialize_members 
+    Purpose: To initialize all the member variables
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void initialize_members() {
         this.stock_cards_layout = (RelativeLayout) findViewById(R.id.stock_cards);
         this.human_hand_cards_layout = (RelativeLayout) findViewById(R.id.human_hand);
@@ -109,6 +145,17 @@ public class GameActivity extends AppCompatActivity {
         this.id_to_bitmap = new Bitmap[48];
     }
 
+    /* *********************************************************************
+    Function Name: getResId 
+    Purpose: To get the resource id given the name of the resource and the type of the resource
+    Parameters:
+				resName, a string, representing the name of the resource
+				c, a generic class type, that tells which type of resource we are looking for.
+    Return Value: An integer, representing the resource id
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private int getResId(String resName, Class<?> c) {
         try {
             Field field = c.getField(resName);
@@ -119,6 +166,18 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: get_resized_bitmap 
+    Purpose: To resize the original bitmap to another dimensions
+    Parameters:
+				bitmap, a Bitmap object, that  we need to resize.
+				width, an integer, that we want to new bitmap's width to be.
+				height, an integer, that we want to new bitmap's height to be.
+    Return Value: A Bitmap object after we resize the original bitmap
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private Bitmap get_resized_bitmap(Bitmap bitmap, int width, int height) {
         Matrix matrix = new Matrix();
 
@@ -130,6 +189,16 @@ public class GameActivity extends AppCompatActivity {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    /* *********************************************************************
+    Function Name: load_card_bitmaps 
+    Purpose: To load the card image resource and decode them into resized Bitmap objects.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void load_card_bitmaps() {
         class ImageName {
             public String get_image_name_from_id(int id) {
@@ -199,6 +268,16 @@ public class GameActivity extends AppCompatActivity {
         empty_card = BitmapFactory.decodeResource(getResources(), R.drawable.empty_card);
     }
 
+    /* *********************************************************************
+    Function Name: redraw_cards 
+    Purpose: To clear the screen and redraw everything in the screen to match the model update
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_cards() {
         clear_all_cards();
@@ -251,6 +330,16 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: show_computer_threw_card_screen 
+    Purpose: To show the computer card throw continuation screen
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_computer_threw_card_screen(String message) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_computer_move_message).setVisibility(View.VISIBLE);
@@ -258,6 +347,16 @@ public class GameActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.text_computer_move)).setText("Computer played " + message);
     }
 
+    /* *********************************************************************
+    Function Name: show_computer_threw_meld_screen 
+    Purpose: To show the computer card meld continuation screen
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_computer_threw_meld_screen(String message) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_computer_meld_message).setVisibility(View.VISIBLE);
@@ -265,6 +364,16 @@ public class GameActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.text_computer_meld)).setText("Computer played " + message);
     }
 
+    /* *********************************************************************
+    Function Name: show_round_end_screen 
+    Purpose: To show the round end screen and all the necessary buttons
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_round_end_screen() {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_round_end).setVisibility(View.VISIBLE);
@@ -287,6 +396,20 @@ public class GameActivity extends AppCompatActivity {
         );
     }
 
+    /* *********************************************************************
+    Function Name: redraw_hand_cards 
+    Purpose: To redraw the hand card pile of a player
+    Parameters:
+				player_num, the number of the player given by either Constants.HUMAN or Constants.COMPUTER
+				playerCardData, the PlayerCardData object, which has all the necessary data pertaining to cards
+					for a player.
+    Return Value: None
+    Local Variables:
+    			dx, an integer, representing the number of pixels gap between each cards
+				left_margin, an integer, representing the margin from the left side of the screen for a card 
+				in number of pixels
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_hand_cards(int player_num, PlayerCardData playerCardData) {
         int dx = (int) (30 * this.getResources().getDisplayMetrics().density);
@@ -318,6 +441,20 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: redraw_meld_cards 
+    Purpose: To redraw the meld cards of a player
+    Parameters:
+				player_num, the number of the player given by either Constants.HUMAN or Constants.COMPUTER
+				playerCardData, the PlayerCardData object, which has all the necessary data pertaining to cards
+					for a player.
+    Return Value: None
+    Local Variables:
+    			dx, an integer, representing the number of pixels gap between each cards
+				left_margin, an integer, representing the margin from the left side of the screen for a card 
+				in number of pixels
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void redraw_meld_cards(int player_num, PlayerCardData playerCardData) {
         int dx = (int) (20 * this.getResources().getDisplayMetrics().density);
@@ -349,6 +486,20 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: redraw_meld_cards 
+    Purpose: To redraw the capture card pile of a player
+    Parameters:
+				player_num, the number of the player given by either Constants.HUMAN or Constants.COMPUTER
+				playerCardData, the PlayerCardData object, which has all the necessary data pertaining to cards
+					for a player.
+    Return Value: None
+    Local Variables:
+    			dx, an integer, representing the number of pixels gap between each cards
+				left_margin, an integer, representing the margin from the left side of the screen for a card 
+				in number of pixels
+    Assistance Received: none
+    ********************************************************************* */
     private void redraw_capture_cards(int player_num, PlayerCardData playerCardData) {
         int dx = (int) (20 * this.getResources().getDisplayMetrics().density);
         int left_margin = 0;
@@ -369,6 +520,20 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: redraw_stock_cards 
+    Purpose: To redraw the stock pile
+    Parameters:
+				player_num, the number of the player given by either Constants.HUMAN or Constants.COMPUTER
+				playerCardData, the PlayerCardData object, which has all the necessary data pertaining to cards
+					for a player.
+    Return Value: None
+    Local Variables:
+    			dx, an integer, representing the number of pixels gap between each cards
+				left_margin, an integer, representing the margin from the left side of the screen for a card 
+				in number of pixels
+    Assistance Received: none
+    ********************************************************************* */
     private void redraw_stock_cards(ArrayList<Integer> stock_card_ids) {
         int dx = (int) (20 * this.getResources().getDisplayMetrics().density);
         int left_margin = 0;
@@ -385,6 +550,17 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
+    /* *********************************************************************
+    Function Name: draw_trump_card 
+    Purpose: To draw the trump card
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void draw_trump_card() {
         if (this.model.isTrump_card_be_shown()) {
             ((ImageButton) (findViewById(R.id.trump_card_display).findViewById(R.id.card_image))).setImageBitmap(
@@ -395,6 +571,16 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: redraw_scores 
+    Purpose: To redraw the scores to show the updated scores
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void redraw_scores() {
         this.text_human_scores.setText(
                 "Human Scores: " + this.model.getPrev_cumulative_scores()[0] + " / " + this.model.getRound_scores()[0]
@@ -405,12 +591,32 @@ public class GameActivity extends AppCompatActivity {
         );
     }
 
+    /* *********************************************************************
+    Function Name: redraw_round_number 
+    Purpose: To redraw the round number to show what the model is telling
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void redraw_round_number() {
         this.text_round_number.setText(
                 "Round Number: " + this.model.getRound_number()
         );
     }
 
+    /* *********************************************************************
+    Function Name: redraw_turn_thrown_cards 
+    Purpose: To redraw the thrown cards. If if only one card is thrown, and empty card is shown.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void redraw_turn_thrown_cards() {
         ArrayList<Integer> turn_thrown_cards = this.model.getTurn_thrown_cards();
 
@@ -438,15 +644,45 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: clear_help_message 
+    Purpose: To clear the help message.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void clear_help_message() {
         ((MaterialTextView) findViewById(R.id.text_help)).setText("");
     }
 
 
+    /* *********************************************************************
+    Function Name: set_help_message 
+    Purpose: To set the help message with a particular text.
+    Parameters:
+				s, a string, that is going to be drawn in the help text
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void set_help_message(String s) {
         ((MaterialTextView) findViewById(R.id.text_help)).setText(s);
     }
 
+    /* *********************************************************************
+    Function Name: listener_card_click 
+    Purpose: Return a listener object that selects/unselects the cards when a card is clicked
+    Parameters:
+				s, a string, that is going to be drawn in the help text
+    Return Value: A View.OnClickListener object, that listens to an onClick event.
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private View.OnClickListener listener_card_click() {
         return new View.OnClickListener() {
             @Override
@@ -471,6 +707,16 @@ public class GameActivity extends AppCompatActivity {
         };
     }
 
+    /* *********************************************************************
+    Function Name: clear_all_cards 
+    Purpose: To clear all the view objects in the card layout to remove the cards
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void clear_all_cards() {
         this.stock_cards_layout.removeAllViews();
         this.human_hand_cards_layout.removeAllViews();
@@ -481,29 +727,90 @@ public class GameActivity extends AppCompatActivity {
         this.computer_capture_cards_layout.removeAllViews();
     }
 
+    /* *********************************************************************
+    Function Name: hide_meld_button 
+    Purpose: To hide the meld buttons (play_meld and skip meld).
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void hide_meld_button() {
         findViewById(R.id.button_play_meld).setVisibility(View.INVISIBLE);
         findViewById(R.id.button_skip_meld).setVisibility(View.INVISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: show_coin_toss_frame 
+    Purpose: To show the coin toss frame
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_coin_toss_frame() {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_coin_toss).setVisibility(View.VISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: show_meld_button 
+    Purpose: To show the meld buttons (play_meld and skip meld).
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_meld_button() {
         findViewById(R.id.button_play_meld).setVisibility(View.VISIBLE);
         findViewById(R.id.button_skip_meld).setVisibility(View.VISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: hide_throw_button 
+    Purpose: To hide the coin toss frame
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void hide_throw_button() {
         findViewById(R.id.button_play_selected_cards).setVisibility(View.INVISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: show_throw_button 
+    Purpose: To show the coin throw button
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void show_throw_button() {
         findViewById(R.id.button_play_selected_cards).setVisibility(View.VISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: listener_card_click 
+    Purpose: To listen to any one of the coin toss input buttons (head/tails buttons)
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_coin_toss_input(View v) {
         findViewById(R.id.coin_toss_buttons).setVisibility(View.INVISIBLE);
@@ -518,6 +825,17 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /* *********************************************************************
+    Function Name: listener_coin_toss_continue 
+    Purpose: To listen to the coin toss continue button and start a new turn
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_coin_toss_continue(View v) {
         findViewById(R.id.coin_toss_buttons).setVisibility(View.VISIBLE);
@@ -530,6 +848,16 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_play_card 
+    Purpose: To listen to the play card button and make the model throw the card
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_play_card(View v) {
         if (this.view_ids_selected.isEmpty()) {
@@ -542,6 +870,18 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    /* *********************************************************************
+    Function Name: listener_btn_computer_throw_continue 
+    Purpose: To listen to the continue button after the computer throws the cards and  make the model continue
+				the turn
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_computer_throw_continue(View v) {
         findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
@@ -553,6 +893,17 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_computer_meld_continue 
+    Purpose: To listen to the continue button after the computer makes a meld the cards and make the model
+				continue the turn the turn
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_computer_meld_continue(View v) {
         findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
@@ -563,6 +914,18 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_play_melds 
+    Purpose: To listen to the play melds button and request the model to make the meld. If the model say that 
+				it is invalid, then tell that it is an invalid meld
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_play_melds(View v) {
         ArrayList<Integer> indexes = (ArrayList<Integer>) this.view_ids_selected.clone();
@@ -578,6 +941,17 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_skip_meld 
+    Purpose: To listen to the skip meld button and make the model skip the meld and continue to next turn.
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_skip_meld(View v) {
         ((MaterialTextView) findViewById(R.id.text_help)).setText("");
@@ -585,6 +959,18 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_ask_help 
+    Purpose: To ask the model for a help text and the card indexes that need to be played. The temporarily 
+				highlight those cards with a green border for 0.5 seconds
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_ask_help(View v) {
         Pair<String, ArrayList<Integer>> help_message = this.model.handler_ask_help();
@@ -609,6 +995,17 @@ public class GameActivity extends AppCompatActivity {
         );
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_skip_meld 
+    Purpose: To listen to the another round button and make the model start a new round.
+			 Refresh the screen after that to update the cards.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_another_round(View v) {
         findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
@@ -618,6 +1015,16 @@ public class GameActivity extends AppCompatActivity {
         this.redraw_cards();
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_end_game 
+    Purpose: To listen to the end game button and display the winner of the game
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_end_game(View v) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
@@ -639,36 +1046,97 @@ public class GameActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.text_game_end)).setText(message);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_quit_game 
+    Purpose: To listen to the quit game button and show the quit game frame
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_quit_game(View v) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_quit_game).setVisibility(View.VISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_quit_game_yes 
+    Purpose: To listen to the yes confirmation button in the quit game screen game button and end the activity.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_quit_game_yes(View v) {
         this.finish();
         System.exit(0);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_quit_game_no 
+    Purpose: To listen to the no confirmation button in the quit game screen game button and cancel the quit.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_quit_game_no(View v) {
         findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
         findViewById(R.id.frame_quit_game).setVisibility(View.INVISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_save_game 
+    Purpose: To listen to the save game button and show the save dialog frame
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_save_game(View v) {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         findViewById(R.id.frame_save_game).setVisibility(View.VISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_quit_game_no 
+    Purpose: To listen to the save game no button and cancel the saving the game.
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_save_no(View v) {
         findViewById(R.id.overlay).setVisibility(View.INVISIBLE);
         findViewById(R.id.frame_save_game).setVisibility(View.INVISIBLE);
     }
 
+    /* *********************************************************************
+    Function Name: listener_btn_quit_game_yes 
+    Purpose: To listen to the save game yes button and make the model save the game to a file
+				Quit the activity after that
+    Parameters:
+				View v, the view object of the button that is clicked
+    Return Value: None
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void listener_btn_save_yes(View v) {
         String message = ((TextView) findViewById(R.id.save_text_input)).getText().toString();
