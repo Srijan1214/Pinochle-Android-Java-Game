@@ -23,14 +23,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Model {
+	// These tell the scores
     private int[] round_scores;
     private int[] prev_cumulative_scores;
 
+	// Tells the lead player for the turn
     private int lead_player;
+	
+	// Tells the current player for the turn
     private int cur_player;
 
     private int trump_card;
 
+	// The players 
     private Human player_1;
     private Computer player_2;
     private Player[] players;
@@ -39,10 +44,6 @@ public class Model {
     private int round_number;
     private int turn_number;
     private int turn_lead_card;
-
-    public ArrayList<Integer> getTurn_thrown_cards() {
-        return (ArrayList<Integer>) turn_thrown_cards.clone();
-    }
 
     private ArrayList<Integer> turn_thrown_cards;
 
@@ -56,11 +57,30 @@ public class Model {
 
     private String latest_message;
 
+    /* *********************************************************************
+    Function Name: Model 
+    Purpose: To construct the model object
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public Model() {
         this.prev_cumulative_scores = new int[]{0, 0};
-//        this.decide_lead_through_coin_toss();
     }
 
+    /* *********************************************************************
+    Function Name: start_new_round 
+    Purpose: To start a new round
+    Parameters:
+				round_number, an integer, representing what the new round number should be
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void start_new_round(int round_number) {
         this.round_number = round_number;
         this.no_of_turns_played = 0;
@@ -81,6 +101,16 @@ public class Model {
 
     }
 
+    /* *********************************************************************
+    Function Name: start_new_turn 
+    Purpose: To start a new turn in the current round
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void start_new_turn() {
         this.turn_number = 0;
         this.turn_thrown_cards = new ArrayList<Integer>();
@@ -97,6 +127,16 @@ public class Model {
         this.continue_turn_loop();
     }
 
+    /* *********************************************************************
+    Function Name: continue_turn_loop 
+    Purpose: To start a new turn in the current round
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void continue_turn_loop() {
         if (this.turn_number == 2) {
             this.finish_turn_after_all_cards_are_thrown();
@@ -113,6 +153,16 @@ public class Model {
 
     }
 
+    /* *********************************************************************
+    Function Name: play_computer_turn 
+    Purpose: To play the computer's card throwing turn.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void play_computer_turn() {
         Pair<String, Integer> computer_move = this.player_2.throw_most_suitable_card(this.turn_lead_card);
         String message = computer_move.first;
@@ -126,6 +176,16 @@ public class Model {
         return;
     }
 
+    /* *********************************************************************
+    Function Name: finish_turn_after_all_cards_are_thrown 
+    Purpose: To finish the current turn, decide who won, add the scores and let the winner meld.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void finish_turn_after_all_cards_are_thrown() {
         this.is_user_input_meld = true;
         if (this.turn_lead_card == -1 ||
@@ -149,6 +209,16 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: computer_play_meld 
+    Purpose: To make the computer play the meld.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void computer_play_meld() {
         Pair<String, Integer> played_pair = this.player_2.play_best_meld();
         String message = played_pair.first;
@@ -160,6 +230,16 @@ public class Model {
         this.modelState = ModelState.COMPUTER_PLAYED_MELD;
     }
 
+    /* *********************************************************************
+    Function Name: go_to_next_turn 
+    Purpose: To decide if the round should end or a new turn should be played. Perform the appropriate action
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void go_to_next_turn() {
         if (this.player_1.get_no_of_remaining_cards() == 0) {
             this.end_round();
@@ -168,12 +248,37 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: end_round 
+    Purpose: To end the current round and set the lead player for the next round.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void end_round() {
         this.modelState = ModelState.ROUND_ENDED;
         this.prev_cumulative_scores[Constants.HUMAN] = this.round_scores[Constants.HUMAN];
         this.prev_cumulative_scores[Constants.COMPUTER] = this.round_scores[Constants.COMPUTER];
+		if(this.prev_cumulative_scores[Constants.HUMAN] > this.prev_cumulative_scores[Constants.COMPUTER]) {
+			this.lead_player = Constants.HUMAN;
+		} else {
+			this.lead_player = Constants.COMPUTER;
+		}
     }
 
+    /* *********************************************************************
+    Function Name: pick_up_cards_from_deck 
+    Purpose: To pick up the cards from the deck and give them to the players.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void pick_up_cards_from_deck() {
         if (this.deck.get_stock_size() == 1) {
             players[this.lead_player].give_card_to_player(deck.pop_card_from_deck());
@@ -185,10 +290,30 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: decide_lead_through_coin_toss 
+    Purpose: To set the next player to a random player to give an illusion of a coin toss.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void decide_lead_through_coin_toss() {
         this.lead_player = new Random().nextInt(2);
     }
 
+    /* *********************************************************************
+    Function Name: deal_cards_from_deck_to_players 
+    Purpose: To distribute the cards from the deck to the appropriate player.
+    Parameters:
+				None
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     private void deal_cards_from_deck_to_players() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
@@ -202,6 +327,17 @@ public class Model {
         this.pick_up_trump_card();
     }
 
+    /* *********************************************************************
+    Function Name: handler_throw_card 
+    Purpose: To distribute the cards from the deck to the appropriate player.
+    Parameters:
+				card_index, an integer, representing the index of the card in the hand pile of the human
+				player to throw.
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public void handler_throw_card(int card_index) {
         int thrown_card_id = this.player_1.get_hand_card_from_index(card_index);
         this.player_1.remove_card_from_pile(card_index);
@@ -215,6 +351,18 @@ public class Model {
         this.continue_turn_loop();
     }
 
+    /* *********************************************************************
+    Function Name: handler_play_meld 
+    Purpose: To query to the human object to play the requested meld. If that is now possible then the current
+			meld value is set to ModelState.PLAYED_INVALID_MELD
+    Parameters:
+				hand_indexes, an array of integers, representing the hand indexes, that the user wants to try and
+				meld.
+    Return Value: None
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public int handler_play_meld(ArrayList<Integer> hand_indexes) {
         int meld_number = this.player_1.perform_meld_if_valid(hand_indexes);
 
@@ -227,6 +375,18 @@ public class Model {
         return -1;
     }
 
+    /* *********************************************************************
+    Function Name: handler_ask_help 
+    Purpose: To ask the human object what is recommended to play based on weather the recommendation is for a
+				meld or for a throw.
+    Parameters:
+				None
+    Return Value: a pair of String and ArrayList<Integer>. The first represents the help message. And the
+					second represents the indexes in the hand pile that should be highlighted.
+    Local Variables:
+    			None
+    Assistance Received: none
+    ********************************************************************* */
     public Pair<String, ArrayList<Integer>> handler_ask_help() {
         if (is_user_input_meld) {
             return this.player_1.get_meld_help_message();
@@ -235,6 +395,19 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: save_game 
+    Purpose: To ask the human object what is recommended to play based on weather the recommendation is for a
+				meld or for a throw.
+    Parameters:
+				file_name, a String, representing the name of file to save the game.
+				ctx, a context object, that is needed to save a file in android.
+    Return Value: None
+    Local Variables:
+    			fos, a FileOutputStream object, that is used to write the game to the internal storage of
+					android
+    Assistance Received: none
+    ********************************************************************* */
     public void save_game(String file_name, Context ctx) {
         FileOutputStream fos = null;
         try {
@@ -256,6 +429,16 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: get_save_string 
+    Purpose: To get the save string that can be used to perform a single write and save to a file
+    Parameters:
+				None
+    Return Value: a string corresponding with the serialization requirements of this project
+    Local Variables:
+    			ret_string, the string variable that is manipulated and returned
+    Assistance Received: none
+    ********************************************************************* */
     private String get_save_string() {
         String ret_string = "";
         ret_string += ("Round: " + this.round_number + "\n\n");
@@ -291,6 +474,17 @@ public class Model {
         return ret_string;
     }
 
+    /* *********************************************************************
+    Function Name: load_game_from_file
+    Purpose: To load a game from a file in the internal storage
+    Parameters:
+				file_name, a String, representing the name of file to load the game from.
+				ctx, a context object, that is needed to save a file in android.
+    Return Value: None
+    Local Variables:
+    			fis, the FileInputStream object, used to read the input from file
+    Assistance Received: none
+    ********************************************************************* */
     public void load_game_from_file(String file_name, Context ctx) {
         FileInputStream fis = null;
 
@@ -317,6 +511,24 @@ public class Model {
         }
     }
 
+    /* *********************************************************************
+    Function Name: load_game_from_string
+    Purpose: To load a game-state given a string corresponding to the serialization format
+    Parameters:
+				br, a BufferedReader object, that is used to get each lines of the serialization
+    Return Value: None
+    Local Variables:
+    			computer_load_lines, a list of strings, that has the respective card pile information strings
+					of the computer
+    			human_load_lines, a list of strings, that has the respective card pile information strings
+					of the human
+	Algorithm:
+				1) Parse the string lines accordingly.
+				2) For every non card pile loading, do the simple stuff in this function to load the gamestate.
+				3) For card piles, give the strings to the player objects and let them load the respective 
+					card piles
+    Assistance Received: none
+    ********************************************************************* */
     private void load_game_from_string(BufferedReader br) throws IOException {
         this.deck = new Deck();
         this.player_1 = new Human();
@@ -428,53 +640,190 @@ public class Model {
 
     }
 
+    /* *********************************************************************
+    Function Name: get_players_card_data
+    Purpose: To get the PlayerCardData objects for each players
+    Parameters:
+				None
+    Return Value: an array of PlayerCardData of size 2. The first element is the PlayerCardData of human while 
+				the second is the PlayerCardData of the computer player.
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public PlayerCardData[] get_players_card_data() {
         return new PlayerCardData[]{player_1.get_cards_for_drawing(), player_2.get_cards_for_drawing()};
     }
 
+    /* *********************************************************************
+    Function Name: get_stock_data
+    Purpose: To get the stock pile cards for rendering
+    Parameters:
+				None
+    Return Value: an array of integers, representing the stock pile card ids
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public ArrayList<Integer> get_stock_data() {
         return this.deck.get_stock_pile();
     }
 
+    /* *********************************************************************
+    Function Name: pick_up_trump_card
+    Purpose: To pick up the trump_card from the deck and give tell them to the players 
+    Parameters:
+				None
+    Return Value: an array of integers, representing the stock pile card ids
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     private void pick_up_trump_card() {
         this.trump_card = deck.pop_card_from_deck();
         this.player_1.setTrump_card(this.trump_card);
         this.player_2.setTrump_card(this.trump_card);
     }
 
+    /* *********************************************************************
+    Function Name: getRound_scores
+    Purpose: Getter for the this.round_scores
+    Parameters:
+				None
+    Return Value: an array of integers, representing the round scores for each player
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public int[] getRound_scores() {
         return round_scores;
     }
 
+    /* *********************************************************************
+    Function Name: getPrev_cumulative_scores
+    Purpose: Getter for this.prev_cumulative_scores
+    Parameters:
+				None
+    Return Value: an array of integers, representing the cumulative scores of all previous round for each
+					player
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public int[] getPrev_cumulative_scores() {
         return prev_cumulative_scores;
     }
 
+    /* *********************************************************************
+    Function Name: is_user_input_state_meld
+    Purpose: Getter for this.is_user_input_meld
+    Parameters:
+				None
+    Return Value: a boolean telling if the current input should be melding
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public boolean is_user_input_state_meld() {
         return is_user_input_meld;
     }
 
+    /* *********************************************************************
+    Function Name: getModelState
+    Purpose: Getter for this.modelState
+    Parameters:
+				None
+    Return Value: a ModelState object telling the state of the current model
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public ModelState getModelState() {
         return modelState;
     }
 
+    /* *********************************************************************
+    Function Name: getLatest_message
+    Purpose: Getter for this.latest_message
+    Parameters:
+				None
+    Return Value: a string, representing the latest message gotten from any message giving function
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public String getLatest_message() {
         return latest_message;
     }
 
+    /* *********************************************************************
+    Function Name: isTrump_card_be_shown
+    Purpose: Getter for this.trump_card_be_shown
+    Parameters:
+				None
+    Return Value: a boolean, telling if the trump card should be shown
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public boolean isTrump_card_be_shown() {
         return trump_card_be_shown;
     }
 
+    /* *********************************************************************
+    Function Name: getRound_number
+    Purpose: Getter for this.round_number
+    Parameters:
+				None
+    Return Value: an integer, representing the current round number
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public int getRound_number() {
         return round_number;
     }
 
+    /* *********************************************************************
+    Function Name: getTrump_card
+    Purpose: Getter for this.trump_card
+    Parameters:
+				None
+    Return Value: an integer, representing the trump card of the current round
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public int getTrump_card() {
         return trump_card;
     }
 
+    /* *********************************************************************
+    Function Name: getLead_player
+    Purpose: Getter for this.lead_player
+    Parameters:
+				None
+    Return Value: an integer, the current lead_player. (0 or 1)
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
     public int getLead_player() {
         return lead_player;
     }
+
+    /* *********************************************************************
+    Function Name: getTurn_thrown_cards
+    Purpose: Getter for this.turn_thrown_cards
+    Parameters:
+				None
+    Return Value: a list of integers, representing cards that were thrown in the current turn up till now
+    Local Variables:
+				None
+    Assistance Received: none
+    ********************************************************************* */
+    public ArrayList<Integer> getTurn_thrown_cards() {
+        return (ArrayList<Integer>) turn_thrown_cards.clone();
+    }
+
 }
