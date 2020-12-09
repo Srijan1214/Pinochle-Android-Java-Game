@@ -21,7 +21,7 @@ public class Deck {
         for (int i = 0; i < Constants.TOTAL_NO_OF_CARDS; i++) {
             this.stock.add(i);
         }
-        Collections.shuffle(this.stock, new Random(7));
+        Collections.shuffle(this.stock, new Random());
 
         for (int ele: this.stock) {
             System.out.println(Card.get_string_from_id(ele));

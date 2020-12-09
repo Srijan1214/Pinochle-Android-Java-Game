@@ -73,6 +73,7 @@ public class Model {
 
         this.deal_cards_from_deck_to_players();
         this.modelState = ModelState.HUMAN_THROWING_CARD;
+        this.is_user_input_meld = false;
 
         this.turn_thrown_cards = new ArrayList<Integer>();
 
@@ -91,6 +92,8 @@ public class Model {
         }
         this.no_of_turns_played += 1;
         this.cur_player = this.lead_player;
+        this.modelState = ModelState.HUMAN_THROWING_CARD;
+        this.is_user_input_meld = false;
         this.continue_turn_loop();
     }
 
