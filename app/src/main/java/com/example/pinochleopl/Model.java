@@ -10,7 +10,6 @@
 package com.example.pinochleopl;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Pair;
 
 import java.io.BufferedReader;
@@ -41,20 +40,31 @@ public class Model {
     private Player[] players;
     private Deck deck;
 
+    // This stores the round number.
     private int round_number;
+
+    // This stores the number of players that have already thrown a card in the current turn
     private int turn_number;
+
+    // This stores the biggest card for the current turn
     private int turn_lead_card;
 
+    // This stores the card that have already been thrown in the current turn
     private ArrayList<Integer> turn_thrown_cards;
 
+    // This stores the number of turns that have been played in the current round
     private int no_of_turns_played;
 
+    // This stores if the current user is making a meld or not
     private boolean is_user_input_meld;
 
+    // This stores if trump card should be shown or not.
     private boolean trump_card_be_shown;
 
+    // This stores the state of the model.
     private ModelState modelState;
 
+    // This stores the latest message that the model wants the view to show
     private String latest_message;
 
     /* *********************************************************************

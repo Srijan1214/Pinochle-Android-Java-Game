@@ -109,7 +109,7 @@ public class GameActivity extends AppCompatActivity {
             this.show_coin_toss_frame();
         }
 
-        redraw_cards();
+        refresh_game_screen();
 //        deleteFile("asdasdasdasdasdq2233123123123");
     }
 
@@ -269,7 +269,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /* *********************************************************************
-    Function Name: redraw_cards 
+    Function Name: refresh_game_screen
     Purpose: To clear the screen and redraw everything in the screen to match the model update
     Parameters:
 				None
@@ -279,7 +279,7 @@ public class GameActivity extends AppCompatActivity {
     Assistance Received: none
     ********************************************************************* */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void redraw_cards() {
+    private void refresh_game_screen() {
         clear_all_cards();
         this.view_ids_selected = new ArrayList<Integer>();
         this.view_id_to_hand_index = new HashMap<Integer, Integer>();
@@ -845,7 +845,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         this.model.start_new_turn();
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
@@ -866,7 +866,7 @@ public class GameActivity extends AppCompatActivity {
         int view_id = this.view_ids_selected.get(0);
         int card_index = this.view_id_to_hand_index.get(view_id);
         this.model.handler_throw_card(card_index);
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
 
@@ -890,7 +890,7 @@ public class GameActivity extends AppCompatActivity {
 
         System.out.println("cllllllll");
         this.model.continue_turn_loop();
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
@@ -911,7 +911,7 @@ public class GameActivity extends AppCompatActivity {
 
 
         this.model.go_to_next_turn();
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
@@ -938,7 +938,7 @@ public class GameActivity extends AppCompatActivity {
         } else {
             ((MaterialTextView) findViewById(R.id.text_help)).setText("");
         }
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
@@ -956,7 +956,7 @@ public class GameActivity extends AppCompatActivity {
     public void listener_btn_skip_meld(View v) {
         ((MaterialTextView) findViewById(R.id.text_help)).setText("");
         this.model.go_to_next_turn();
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
@@ -1012,7 +1012,7 @@ public class GameActivity extends AppCompatActivity {
         findViewById(R.id.frame_round_end).setVisibility(View.INVISIBLE);
 
         this.model.start_new_round(this.model.getRound_number() + 1);
-        this.redraw_cards();
+        this.refresh_game_screen();
     }
 
     /* *********************************************************************
